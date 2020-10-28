@@ -12,7 +12,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = '1.0.2'
+version = '1.0.3'
 group = 'com.apex.forge.itemresistance'
 archivesBaseName = 'ItemResistance-1.16.3'
 
