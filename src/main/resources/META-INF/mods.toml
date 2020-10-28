@@ -1,14 +1,14 @@
 modLoader="javafml"
 loaderVersion="[34,)"
-license="GNU General Public License v3.0"
-#issueTrackerURL="https://github.com/ApexModder/ItemResistance/issues"
+license="GNU"
+issueTrackerURL="https://github.com/ApexModder/ItemResistance/issues"
 
 [[mods]]
 modId="itemresistance"
 version="${file.jarVersion}"
 displayName="ItemResistance"
-#updateJSONURL="https://raw.githubusercontent.com/ApexModder/ItemResistance/master/update.json"
-#displayURL="https://github.com/ApexModder/ItemResistance"
+updateJSONURL="https://raw.githubusercontent.com/ApexModder/ItemResistance/master/update.json"
+displayURL="https://github.com/ApexModder/ItemResistance"
 #logoFile="logo.png"
 #credits=""
 authors="ApexModder"

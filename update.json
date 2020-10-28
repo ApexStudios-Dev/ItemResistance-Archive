@@ -1,0 +1,9 @@
+{
+	"homepage": "https://www.curseforge.com/minecraft/mc-mods/itemresistance",
+	"promos": {
+		"1.16.3-recommended": "1.0.2"
+	},
+	"1.16.3": {
+		"1.0.2": "Initial mod release"
+	}
+}
