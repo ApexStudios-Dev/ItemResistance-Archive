@@ -1,11 +1,15 @@
 {
 	"homepage": "https://www.curseforge.com/minecraft/mc-mods/itemresistance",
 	"promos": {
-		"1.16.3-recommended": "1.0.4"
+		"1.16.3-recommended": "1.0.4",
+		"1.12.2-recommended": "1.0.5"
 	},
 	"1.16.3": {
 		"1.0.2": "Initial mod release",
 		"1.0.3": "Fix broken update.json url",
 		"1.0.4": "Update mod to show CurseForge URL rather than GitHub"
+	},
+	"1.12.2": {
+		"1.0.5": "Initial port to 1.12"
 	}
 }
