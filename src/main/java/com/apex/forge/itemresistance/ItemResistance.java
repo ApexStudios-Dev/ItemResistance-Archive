@@ -81,7 +81,7 @@ public class ItemResistance
 
 					// if block marked as always resisting
 					// keep the exploded item
-					if(FORCE_RESIST.func_230235_a_(block))
+					if(FORCE_RESIST.contains(block))
 					{
 						itr.remove();
 						continue;
@@ -89,7 +89,7 @@ public class ItemResistance
 
 					// if block marked as always exploding
 					// explode the item
-					if(FORCE_EXPLODE.func_230235_a_(block))
+					if(FORCE_EXPLODE.contains(block))
 						continue;
 
 					// if we get here, block does not have our custom tags
