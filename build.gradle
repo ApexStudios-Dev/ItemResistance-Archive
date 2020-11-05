@@ -12,11 +12,11 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-def forge_version = '34.1.33'
-def mc_version = '1.16.3'
-def mappings_version = '20200514-1.16.3'
+def forge_version = '35.0.2'
+def mc_version = '1.16.4'
+def mappings_version = '20201028-1.16.3'
 
-def mod_version = '1.2.0'
+def mod_version = '2.0.0'
 def mod_package = 'com.apex.forge.itemresistance'
 def mod_name = 'ItemResistance'
 def mod_author = 'ApexModder'
