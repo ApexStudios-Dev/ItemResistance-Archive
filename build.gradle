@@ -36,8 +36,8 @@ minecraft {
 		client {
 			workingDirectory project.file('run/client')
 
-			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-			property 'forge.logging.console.level', 'debug'
+			// property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			// property 'forge.logging.console.level', 'debug'
 
 			mods {
 				itemresistance {
@@ -46,11 +46,29 @@ minecraft {
 			}
 		}
 
+		clientAuthed {
+			parent runs.client
+
+			if(project.hasProperty('mc_uuid')) {
+				args '--uuid', project.getProperty('mc_uuid');
+			}
+
+			if(project.hasProperty('mc_username')) {
+				args '--username', project.getProperty('mc_username');
+			}
+
+			if(project.hasProperty('mc_accessToken')) {
+				args '--accessToken', project.getProperty('mc_accessToken');
+			}
+		}
+
 		server {
 			workingDirectory project.file('run/server')
 
-			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-			property 'forge.logging.console.level', 'debug'
+			// property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			// property 'forge.logging.console.level', 'debug'
+
+			args 'nogui'
 
 			mods {
 				itemresistance {
@@ -62,8 +80,8 @@ minecraft {
 		data {
 			workingDirectory project.file('run/data')
 
-			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-			property 'forge.logging.console.level', 'debug'
+			// property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			// property 'forge.logging.console.level', 'debug'
 
 			args '--mod', 'itemresistance', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
