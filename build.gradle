@@ -11,21 +11,22 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
-
-def forge_version = '35.0.2'
-def mc_version = '1.16.4'
-def mappings_version = '20201028-1.16.3'
-
-def mod_version = '2.0.0'
-def mod_package = 'com.apex.forge.itemresistance'
-def mod_name = 'ItemResistance'
-def mod_author = 'ApexModder'
+apply plugin: 'maven-publish'
 
 version = "${mod_version}"
 group = "${mod_package}"
 archivesBaseName = "${mod_name}-${mc_version}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+sourceSets {
+	api
+	main
+}
+
+configurations {
+	apiCompile.extendsFrom(compile)
+}
 
 minecraft {
 	mappings channel: 'snapshot', version: "${mappings_version}"
@@ -40,8 +41,9 @@ minecraft {
 			// property 'forge.logging.console.level', 'debug'
 
 			mods {
-				itemresistance {
+				ItemResistance {
 					source sourceSets.main
+					source sourceSets.api
 				}
 			}
 		}
@@ -71,8 +73,9 @@ minecraft {
 			args 'nogui'
 
 			mods {
-				itemresistance {
+				ItemResistance {
 					source sourceSets.main
+					source sourceSets.api
 				}
 			}
 		}
@@ -83,11 +86,12 @@ minecraft {
 			// property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 			// property 'forge.logging.console.level', 'debug'
 
-			args '--mod', 'itemresistance', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+			args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
 			mods {
-				itemresistance {
+				ItemResistance {
 					source sourceSets.main
+					source sourceSets.api
 				}
 			}
 		}
@@ -98,20 +102,93 @@ sourceSets.main.resources {
 	srcDir 'src/generated/resources'
 }
 
+repositories {
+	maven { url 'https://dvs1.progwml6.com/files/maven' } // JEI
+	// maven { url 'https://maven.tterrag.com/' } // TOP
+
+	// maven { url "file:///${project.projectDir}/mcmodsrepo" }
+}
+
 dependencies {
 	minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+
+	implementation sourceSets.api.output
+
+	// JEI
+	compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
+	runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+
+	// TOP
+	// compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}:api")
+	// runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}")
+}
+
+task apiJar(type: Jar, dependsOn: classes) {
+	classifier = 'api'
+	// from sourceSets.api.output
+	from sourceSets.api.allJava
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allJava
+	from sourceSets.api.allJava
+}
+
+task deobfJar(type: Jar) {
+	classifier = 'deobf'
+	from sourceSets.main.output
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	classifier = 'javadoc'
+	from javadoc.destinationDir
+}
+
+artifacts {
+	archives jar
+	archives javadocJar
+	archives sourcesJar
+	archives deobfJar
+	archives apiJar
 }
 
 jar {
+	from sourceSets.main.output.classesDirs
+	from sourceSets.api.output.classesDirs
+	from sourceSets.main.output.resourcesDir
+	from sourceSets.api.output.resourcesDir
+
 	manifest {
 		attributes([
-			'Specification-Title': "${mod_name}",
-			'Specification-Vendor': "${mod_author}",
-			'Specification-Version': '1',
-			'Implementation-Title': "${mod_name}",
-			'Implementation-Version': "${mod_version}",
-			'Implementation-Vendor' : "${mod_name}",
-			'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+				'Specification-Title': "${mod_name}",
+				'Specification-Vendor': "${mod_author}",
+				'Specification-Version': '1',
+				'Implementation-Title': "${mod_name}",
+				'Implementation-Version': "${mod_version}",
+				'Implementation-Vendor' : "${mod_name}",
+				'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 		])
+	}
+}
+
+jar.finalizedBy('reobfJar')
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			groupId = "${mod_package}"
+			artifactId = "${mod_id}"
+			version = "${mc_version}-${mod_version}"
+
+			artifact jar
+			artifact javadocJar
+			artifact sourcesJar
+			artifact deobfJar
+			artifact apiJar
+		}
+	}
+	repositories {
+		mavenLocal()
 	}
 }
