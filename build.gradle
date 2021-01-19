@@ -103,7 +103,7 @@ sourceSets.main.resources {
 }
 
 repositories {
-	maven { url 'https://dvs1.progwml6.com/files/maven' } // JEI
+	// maven { url 'https://dvs1.progwml6.com/files/maven' } // JEI
 	// maven { url 'https://maven.tterrag.com/' } // TOP
 
 	// maven { url "file:///${project.projectDir}/mcmodsrepo" }
@@ -115,8 +115,8 @@ dependencies {
 	implementation sourceSets.api.output
 
 	// JEI
-	compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
-	runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+	// compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
+	// runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 
 	// TOP
 	// compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}:api")

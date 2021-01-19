@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[35,)"
+loaderVersion="[36,)"
 license="GNU"
 issueTrackerURL="https://github.com/ApexModder/ItemResistance/issues"
 
@@ -24,14 +24,14 @@ TNT wont blow up dropped obisidan item stacks.
 [[dependencies.itemresistance]]
     modId="forge"
     mandatory=true
-    versionRange="[35,)"
+    versionRange="[36,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.itemresistance]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.4]"
+    versionRange="[1.16.5]"
     ordering="NONE"
     side="BOTH"
 
@@ -39,16 +39,16 @@ TNT wont blow up dropped obisidan item stacks.
 # NO-OP
 
 # Optional dependencies
-[[dependencies.itemresistance]]
-    modId="jei"
-    mandatory=false
-    versionRange="[7.6,)"
-    ordering="AFTER"
-    side="BOTH"
+#[[dependencies.itemresistance]]
+#    modId="jei"
+#    mandatory=false
+#    versionRange="[7.6,)"
+#    ordering="AFTER"
+#    side="BOTH"
 
-[[dependencies.itemresistance]]
-    modId="theoneprobe"
-    mandatory=false
-    versionRange="[1.16.4-3,)"
-    ordering="AFTER"
-    side="BOTH"
+#[[dependencies.itemresistance]]
+#    modId="theoneprobe"
+#    mandatory=false
+#    versionRange="[1.16.4-3,)"
+#    ordering="AFTER"
+#    side="BOTH"
