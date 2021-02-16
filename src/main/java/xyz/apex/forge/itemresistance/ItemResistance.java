@@ -1,4 +1,4 @@
-package com.apex.forge.itemresistance;
+package xyz.apex.forge.itemresistance;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
