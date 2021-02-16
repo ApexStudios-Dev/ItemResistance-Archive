@@ -14,7 +14,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 version = "${mod_version}"
-group = "${mod_package}"
+group = "${apex_package}.${mod_id}"
 archivesBaseName = "${mod_name}-${mc_version}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
@@ -177,7 +177,7 @@ jar.finalizedBy('reobfJar')
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			groupId = "${mod_package}"
+			groupId = "${apex_package}"
 			artifactId = "${mod_id}"
 			version = "${mc_version}-${mod_version}"
 
