@@ -14,7 +14,8 @@ jobs:
       id: check_files
       uses: andstor/file-existence-action@v1
       with:
-        files: "gradle/, build.gradle, gradle.properties, gradlew, gradlew.bat, settings.gradle. src/"
+        files: "gradle/, build.gradle, gradle.properties, gradlew, gradlew.bat, settings.gradle, src/"
+        allow_failure: true
       
     - name: Set up JDK 1.8
       if: steps.check_files.outputs.files_exists == 'true'
