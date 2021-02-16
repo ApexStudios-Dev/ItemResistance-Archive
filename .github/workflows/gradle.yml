@@ -1,0 +1,31 @@
+name: Java CI with Gradle
+
+on: [ push, pull_request ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout GitHub actions
+      uses: actions/checkout@v2
+
+    - name: Validate branch contains project files
+      id: check_files
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "gradle/, build.gradle, gradle.properties, gradlew, gradlew.bat, settings.gradle. src/"
+      
+    - name: Set up JDK 1.8
+      if: steps.check_files.outputs.files_exists == 'true'
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    
+    - name: Grant execute permission for gradlew
+      if: steps.check_files.outputs.files_exists == 'true'
+      run: chmod +x gradlew
+    
+    - name: Build with Gradle
+      if: steps.check_files.outputs.files_exists == 'true'
+      run: ./gradlew build
