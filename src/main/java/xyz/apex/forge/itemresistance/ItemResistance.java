@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -38,7 +39,7 @@ public class ItemResistance
 	// wrapper method to create block tags
 	private static ITag.INamedTag<Block> tag(String name)
 	{
-		return BlockTags.makeWrapperTag(String.format("%s:%s", MOD_ID, name));
+		return BlockTags.createOptional(new ResourceLocation(MOD_ID, name));
 	}
 
 	public static float getExplosionSize(Explosion explosion)
@@ -101,7 +102,7 @@ public class ItemResistance
 					// calculate explosion size
 					// same calculation as in
 					// net.minecraft.world.Explosion#doExplosionA:L148
-					float f = explosionSize * (.7F + world.rand.nextFloat() * .6F);
+					float f = explosionSize * (.7F + world.random.nextFloat() * .6F);
 
 					// decrement explosion size
 					// by blocks explosion resistance amount

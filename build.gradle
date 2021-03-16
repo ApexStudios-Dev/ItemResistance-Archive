@@ -1,17 +1,20 @@
 buildscript {
 	repositories {
 		maven { url = 'https://files.minecraftforge.net/maven' }
+		// maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
 		jcenter()
 		mavenCentral()
 	}
 	dependencies {
-		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+		// classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
 	}
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+//apply plugin: 'org.spongepowered.mixin'
 
 version = "${mod_version}"
 group = "${apex_package}.${mod_id}"
@@ -19,17 +22,8 @@ archivesBaseName = "${mod_name}-${mc_version}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
-sourceSets {
-	api
-	main
-}
-
-configurations {
-	apiCompile.extendsFrom(compile)
-}
-
 minecraft {
-	mappings channel: 'snapshot', version: "${mappings_version}"
+	mappings channel: 'official', version: "${mc_version}"
 	// makeObfSourceJar = false
 	// accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -40,16 +34,20 @@ minecraft {
 			// property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 			// property 'forge.logging.console.level', 'debug'
 
+			// property 'mixin.env.disableRefMap', 'true'
+			// args '-mixin.config=' + mod_id + '.mixins.json'
+
 			mods {
 				ItemResistance {
 					source sourceSets.main
-					source sourceSets.api
 				}
 			}
 		}
 
 		clientAuthed {
 			parent runs.client
+
+			// args '-mixin.config=' + mod_id + '.mixins.json'
 
 			if(project.hasProperty('mc_uuid')) {
 				args '--uuid', project.getProperty('mc_uuid');
@@ -70,12 +68,14 @@ minecraft {
 			// property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 			// property 'forge.logging.console.level', 'debug'
 
+			// property 'mixin.env.disableRefMap', 'true'
+			// args '-mixin.config=' + mod_id + '.mixins.json'
+
 			args 'nogui'
 
 			mods {
 				ItemResistance {
 					source sourceSets.main
-					source sourceSets.api
 				}
 			}
 		}
@@ -86,33 +86,36 @@ minecraft {
 			// property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 			// property 'forge.logging.console.level', 'debug'
 
+			// property 'mixin.env.disableRefMap', 'true'
+			// args '-mixin.config=' + mod_id + '.mixins.json'
+
 			args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
 			mods {
 				ItemResistance {
 					source sourceSets.main
-					source sourceSets.api
 				}
 			}
 		}
 	}
 }
 
+/*mixin {
+	add sourceSets.main, "${mod_id}.refmap.json"
+}*/
+
 sourceSets.main.resources {
 	srcDir 'src/generated/resources'
 }
 
 repositories {
-	// maven { url 'https://dvs1.progwml6.com/files/maven' } // JEI
-	// maven { url 'https://maven.tterrag.com/' } // TOP
-
-	// maven { url "file:///${project.projectDir}/mcmodsrepo" }
+	mavenLocal() // Local Deps
+	maven { url 'https://dvs1.progwml6.com/files/maven' } // JEI
+	maven { url 'https://maven.tterrag.com/' } // TOP
 }
 
 dependencies {
 	minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-
-	implementation sourceSets.api.output
 
 	// JEI
 	// compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
@@ -121,18 +124,16 @@ dependencies {
 	// TOP
 	// compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}:api")
 	// runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}")
-}
 
-task apiJar(type: Jar, dependsOn: classes) {
-	classifier = 'api'
-	// from sourceSets.api.output
-	from sourceSets.api.allJava
+	if(project.hasProperty('apex_local_deps') && project.getProperty('apex_local_deps')) {
+		// Local Deps
+		runtimeOnly fg.deobf("${apex_package}:devworld:${mc_version}-${devworld_version}")
+	}
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = 'sources'
 	from sourceSets.main.allJava
-	from sourceSets.api.allJava
 }
 
 task deobfJar(type: Jar) {
@@ -150,14 +151,11 @@ artifacts {
 	archives javadocJar
 	archives sourcesJar
 	archives deobfJar
-	archives apiJar
 }
 
 jar {
 	from sourceSets.main.output.classesDirs
-	from sourceSets.api.output.classesDirs
 	from sourceSets.main.output.resourcesDir
-	from sourceSets.api.output.resourcesDir
 
 	manifest {
 		attributes([
@@ -168,6 +166,7 @@ jar {
 				'Implementation-Version': "${mod_version}",
 				'Implementation-Vendor' : "${mod_name}",
 				'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+				// 'MixinConfigs': "${mod_id}.mixins.json"
 		])
 	}
 }
@@ -185,7 +184,6 @@ publishing {
 			artifact javadocJar
 			artifact sourcesJar
 			artifact deobfJar
-			artifact apiJar
 		}
 	}
 	repositories {
