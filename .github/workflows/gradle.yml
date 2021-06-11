@@ -17,6 +17,7 @@ jobs:
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    
-    - name: Build with Gradle
-      run: ./gradlew build
+
+# TODO: Re-Add gradle build action when 1.17 releases
+#    - name: Build with Gradle
+#      run: ./gradlew build

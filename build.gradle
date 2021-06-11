@@ -1,3 +1,4 @@
+// TODO: Update to match 1.17 MDK when it releases
 buildscript {
 	repositories {
 		maven { url = 'https://files.minecraftforge.net/maven' }
@@ -117,12 +118,12 @@ dependencies {
 	minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
 	// JEI
-	compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
-	runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+	// compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
+	// runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 
 	// TOP
-	compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}:api")
-	runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}")
+	// compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}:api")
+	// runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}")
 
 	if(project.hasProperty('apex_local_deps') && project.getProperty('apex_local_deps')) {
 		// runtimeOnly fg.deobf("${apex_package}:devworld:${mc_version}-${devworld_version}")
