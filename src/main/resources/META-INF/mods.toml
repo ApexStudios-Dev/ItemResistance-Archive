@@ -18,9 +18,6 @@ Gives dropped block items explosion resistance, as if they were placed.
 TNT wont blow up dropped obisidan item stacks.
 '''
 
-# Minecraft & Forge dependencies are optional
-# and not required, all mods are loaded after these
-# but for completness best to include them
 [[dependencies.itemresistance]]
     modId="forge"
     mandatory=true
@@ -31,12 +28,6 @@ TNT wont blow up dropped obisidan item stacks.
 [[dependencies.itemresistance]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.5]"
+    versionRange="[1.16.5,1.17]"
     ordering="NONE"
     side="BOTH"
-
-# Required dependencies
-# NO-OP
-
-# Optional dependencies
-# NO-OP

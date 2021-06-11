@@ -6,8 +6,8 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-		// classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: fg_version, changing: true
+		// classpath "org.spongepowered:mixingradle:${mixin_version}"
 	}
 }
 
@@ -20,11 +20,10 @@ version = "${mod_version}"
 group = "${apex_package}.${mod_id}"
 archivesBaseName = "${mod_name}-${mc_version}"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
 	mappings channel: 'official', version: "${mc_version}"
-	// makeObfSourceJar = false
 	// accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
 	runs {
@@ -118,16 +117,15 @@ dependencies {
 	minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
 	// JEI
-	// compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
-	// runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+	compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
+	runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 
 	// TOP
-	// compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}:api")
-	// runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}")
+	compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}:api")
+	runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-${mc_version_short}:${mc_version_short}-${top_version}")
 
 	if(project.hasProperty('apex_local_deps') && project.getProperty('apex_local_deps')) {
-		// Local Deps
-		runtimeOnly fg.deobf("${apex_package}:devworld:${mc_version}-${devworld_version}")
+		// runtimeOnly fg.deobf("${apex_package}:devworld:${mc_version}-${devworld_version}")
 	}
 }
 
