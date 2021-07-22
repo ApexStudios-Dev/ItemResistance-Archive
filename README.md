@@ -1,4 +1,4 @@
-# [ItemResistance](https://www.curseforge.com/minecraft/mc-mods/itemresistance) | 1.17
+# [ItemResistance](https://www.curseforge.com/minecraft/mc-mods/itemresistance) | 1.17.1
 ![Java CI with Gradle](https://github.com/ApexModder/ItemResistance/workflows/Java%20CI%20with%20Gradle/badge.svg?branch=1.17&event=push)
 
 ---

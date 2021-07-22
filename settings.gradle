@@ -1,3 +1,1 @@
-rootProject.name = "${mod_name}-1.17"
-// TODO: Uncomment when 1.17 releases (Update gradle.properties to correct versions)
-// rootProject.name = "${mod_name}-${mc_version}"
+rootProject.name = "${mod_name}-${mc_version}"

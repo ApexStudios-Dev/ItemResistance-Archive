@@ -1,20 +1,20 @@
 package xyz.apex.forge.itemresistance;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.util.Iterator;
 
@@ -25,10 +25,10 @@ public class ItemResistance
 
 	// tag to mark blocks as always exploding
 	// if bedrock has this tag, tnt can blow it up in item form
-	public static final ITag.INamedTag<Block> FORCE_EXPLODE = tag("force_explode");
+	public static final Tag.Named<Block> FORCE_EXPLODE = tag("force_explode");
 	// tag to mark blocks always resisting
 	// if dirt has this tag, tnt can not blow it up in item form
-	public static final ITag.INamedTag<Block> FORCE_RESIST = tag("force_resist");
+	public static final Tag.Named<Block> FORCE_RESIST = tag("force_resist");
 
 	public ItemResistance()
 	{
@@ -37,7 +37,7 @@ public class ItemResistance
 	}
 
 	// wrapper method to create block tags
-	private static ITag.INamedTag<Block> tag(String name)
+	private static Tag.Named<Block> tag(String name)
 	{
 		return BlockTags.createOptional(new ResourceLocation(MOD_ID, name));
 	}
@@ -49,7 +49,7 @@ public class ItemResistance
 		// we use reflection to obtain the value of this field
 		// ObfuscationReflectionHelper since Minecraft code is obfuscated outside of development
 		// (maps human readable name to obfuscated name)
-		Float explosionSize = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "field_77280_f");
+		Float explosionSize = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "f_46017_");
 		// getPrivateValue() is marked nullable
 		// simple null check to default to 0F
 		return explosionSize == null ? 0F : explosionSize;
@@ -57,7 +57,7 @@ public class ItemResistance
 
 	private void onExplosionDetonate(ExplosionEvent.Detonate event)
 	{
-		World world = event.getWorld();
+		Level world = event.getWorld();
 		Explosion explosion = event.getExplosion();
 		float explosionSize = getExplosionSize(explosion);
 		Iterator<Entity> itr = event.getAffectedEntities().iterator();
@@ -68,16 +68,14 @@ public class ItemResistance
 			Entity entity = itr.next();
 
 			// check if entity is dropped item stack
-			if(entity instanceof ItemEntity)
+			if(entity instanceof ItemEntity itemEntity)
 			{
-				ItemEntity itemEntity = (ItemEntity) entity;
 				ItemStack stack = itemEntity.getItem();
 				Item item = stack.getItem();
 
 				// check if dropped item is a block
-				if(item instanceof BlockItem)
+				if(item instanceof BlockItem blockItem)
 				{
-					BlockItem blockItem = (BlockItem) item;
 					Block block = blockItem.getBlock();
 
 					// if block marked as always resisting
