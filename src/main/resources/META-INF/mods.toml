@@ -1,33 +1,48 @@
 modLoader="javafml"
-loaderVersion="[37,)"
-license="GNU"
+loaderVersion="${forge_version_range}"
+license="GNU General Public License v3.0"
 issueTrackerURL="https://github.com/ApexModder/ItemResistance/issues"
 
 [[mods]]
-modId="itemresistance"
-version="${file.jarVersion}"
-displayName="ItemResistance"
-updateJSONURL="https://raw.githubusercontent.com/ApexModder/ItemResistance/main/update.json"
-displayURL="https://www.curseforge.com/minecraft/mc-mods/itemresistance"
-# logoFile="logo.png"
-# credits=""
-authors="ApexModder"
-description='''
-Gives dropped block items explosion resistance, as if they were placed.
+    modId="${mod_id}"
+    version="${mod_version}"
+    displayName="${mod_name}"
+    updateJSONURL="https://raw.githubusercontent.com/ApexModder/Version/master/itemresistance.json"
+    displayURL="https://www.curseforge.com/minecraft/mc-mods/itemresistance"
+    # logoFile="banner.png"
+    # credits=""
+    authors="${mod_authors}"
+    description="Stops dropped items from exploding"
 
-TNT wont blow up dropped obisidan item stacks.
-'''
-
-[[dependencies.itemresistance]]
+[[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true
-    versionRange="[37,)"
-    ordering="NONE"
+    versionRange="${forge_version_range}"
+    ordering="AFTER"
     side="BOTH"
-
-[[dependencies.itemresistance]]
+    [dependencies.${mod_id}.custom.mc-publish]
+        ignore=true
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.17.1,1.18]"
-    ordering="NONE"
+    versionRange="${minecraft_version_range}"
+    ordering="AFTER"
     side="BOTH"
+    [dependencies.${mod_id}.custom.mc-publish]
+        ignore=true
+[[dependencies.${mod_id}]]
+    modId="${devworld_mod_id}"
+    mandatory=false
+    versionRange="${devworld_version_range}"
+    ordering="AFTER"
+    side="BOTH"
+    [dependencies.${mod_id}.custom.mc-publish]
+        ignore=true
+[[dependencies.${mod_id}]]
+    modId="${smoothboot_mod_id}"
+    mandatory=false
+    versionRange="${smoothboot_version_range}"
+    ordering="AFTER"
+    side="BOTH"
+    [dependencies.${mod_id}.custom.mc-publish]
+        ignore=true
