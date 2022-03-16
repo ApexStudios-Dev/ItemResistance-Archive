@@ -1,1 +1,18 @@
-rootProject.name = "${mod_name}-${mc_version}"
+rootProject.name = "${mod_name}"
+
+gradle.beforeProject { prj ->
+	// ensure required properties exist
+	new URL('https://raw.githubusercontent.com/ApexModder/Version/master/properties/1.16.5.properties').readLines().forEach { line ->
+		def split = line.split('=', 2)
+
+		if(split.length == 2) {
+			def key = split[0]
+			if(!prj.hasProperty(key)) {
+				def value = split[1]
+				println("[${prj.name}] Missing required property '${key}', Using default from remote (${value}). [Override by specificing in some `gradle.properties` file]")
+				prj.properties.put(key, value)
+				prj.ext.set(key, value)
+			}
+		}
+	}
+}

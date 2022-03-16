@@ -1,6 +1,8 @@
 package xyz.apex.forge.itemresistance;
 
 import net.minecraft.block.Block;
+import net.minecraft.data.BlockTagsProvider;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.BlockItem;
@@ -15,6 +17,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.util.Iterator;
 
@@ -34,6 +38,27 @@ public class ItemResistance
 	{
 		// register event listener for detonate events
 		MinecraftForge.EVENT_BUS.addListener(this::onExplosionDetonate);
+		// register event listener for data generation
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onGatherData);
+	}
+
+	private void onGatherData(GatherDataEvent event)
+	{
+		// only if we are generating server data files
+		if(event.includeServer())
+		{
+			DataGenerator generator = event.getGenerator();
+			// register block tags generator
+			generator.addProvider(new BlockTagsProvider(generator, MOD_ID, event.getExistingFileHelper()) {
+				@Override
+				protected void addTags()
+				{
+					// generate empty tags
+					tag(FORCE_EXPLODE);
+					tag(FORCE_RESIST);
+				}
+			});
+		}
 	}
 
 	// wrapper method to create block tags
