@@ -13,7 +13,6 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
@@ -88,6 +87,8 @@ minecraft {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://dvs1.progwml6.com/files/maven' }
+	maven { url 'https://maven.tterrag.com/' }
 	maven { url 'https://apexmodder.jfrog.io/artifactory/mods-maven/' }
 }
 
