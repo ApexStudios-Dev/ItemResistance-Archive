@@ -211,7 +211,6 @@ if(System.getenv('CURSEFORGE_TOKEN') != null) {
 		}
 
 		options {
-			debug = true
 			detectNewerJava = true
 		}
 	}
@@ -228,6 +227,5 @@ if(System.getenv('MODRINTH_TOKEN') != null) {
 		gameVersions = [ "${minecraft_version}" ]
 		loaders = [ 'forge' ]
 		dependencies = [ ]
-		debugMode = true
 	}
 }
