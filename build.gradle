@@ -11,6 +11,11 @@ buildscript {
 	}
 }
 
+plugins {
+	id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
+	id 'com.modrinth.minotaur' version "${minotaur_version}"
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
@@ -188,5 +193,41 @@ if(System.getenv('APEX_MODS_MAVEN_USERNAME') != null && System.getenv('APEX_MODS
 				}
 			}
 		}
+	}
+}
+
+if(System.getenv('CURSEFORGE_TOKEN') != null) {
+	curseforge {
+		apikey = System.getenv('CURSEFORGE_TOKEN')
+
+		project {
+			id = "${mod_curseforge_id}"
+			releaseType = "${mod_release_type}"
+			addGameVersion "${minecraft_version}"
+
+			mainArtifact jar
+			addArtifact sourcesJar
+			addArtifact deobfJar
+		}
+
+		options {
+			debug = true
+			detectNewerJava = true
+		}
+	}
+}
+
+if(System.getenv('MODRINTH_TOKEN') != null) {
+	modrinth {
+		token = System.getenv('MODRINTH_TOKEN')
+		projectId = "${mod_modrinth_id}"
+		versionNumber = "${mod_version}"
+		versionType = "${mod_release_type}"
+		uploadFile = jar
+		additionalFiles = [ sourcesJar, deobfJar ]
+		gameVersions = [ "${minecraft_version}" ]
+		loaders = [ 'forge' ]
+		dependencies = [ ]
+		debugMode = true
 	}
 }
