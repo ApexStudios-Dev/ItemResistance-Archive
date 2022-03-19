@@ -1,4 +1,4 @@
-# [ItemResistance](https://www.curseforge.com/minecraft/mc-mods/itemresistance) | 1.18.1
+# [ItemResistance](https://www.curseforge.com/minecraft/mc-mods/itemresistance) | 1.18.2
 
 ---
 
