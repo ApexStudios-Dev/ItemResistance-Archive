@@ -37,6 +37,9 @@ jobs:
       - uses: gradle/wrapper-validation-action@v1
       - run: chmod +x ./gradlew
 
+      # Generate Changelog
+      - run: ./gradlew gitChangelogTask
+
       # Generate Minecraft Assets & Data files
       - run: ./gradlew Data # `Data` should match the `runData` gradle task name
 
@@ -48,6 +51,12 @@ jobs:
         with:
           name: build-artifacts
           path: ./build/libs
+
+      # Upload changelog to GitHub Actions
+      - uses: actions/upload-artifact@v3
+        with:
+          name: changelog
+          path: ./CHANGELOG.md
 
       # Publish mod
       - run: ./gradlew publish
