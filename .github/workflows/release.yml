@@ -105,7 +105,7 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
           color: '#b50e0e'
           file: ./CHANGELOG.md
-          message: '**ItemResistance** has been updated to v**_${{ steps.mod_version.outputs.value }}_** for **Minecraft** **_1.16.5_**!'
+          message: '<@&963675433302388776> has been updated to v**_${{ steps.mod_version.outputs.value }}_** for **Minecraft** **_1.16.5_**!'
 
       - name: Stop Gradle Deamons
         run: ./gradlew --stop
