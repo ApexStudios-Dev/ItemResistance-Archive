@@ -139,11 +139,13 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 task deobfJar(type: Jar) {
 	classifier 'deobf'
 	from sourceSets.main.output
+	exclude '**/*bbmodel'
 }
 
 jar {
 	from sourceSets.main.output.classesDirs
 	from sourceSets.main.output.resourcesDir
+	exclude '**/*bbmodel'
 }
 
 artifacts {
