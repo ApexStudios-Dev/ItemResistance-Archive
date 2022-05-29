@@ -2,7 +2,7 @@ rootProject.name = "${mod_name}"
 
 gradle.beforeProject { prj ->
 	// ensure required properties exist
-	new URL('https://raw.githubusercontent.com/ApexModder/Version/master/properties/1.18.2.properties').readLines().forEach { line ->
+	new URL('https://raw.githubusercontent.com/ApexStudios-Dev/Version/master/properties/1.18.2.properties').readLines().forEach { line ->
 		def split = line.split('=', 2)
 
 		if(split.length == 2) {
