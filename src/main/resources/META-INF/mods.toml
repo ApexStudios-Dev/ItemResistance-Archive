@@ -1,13 +1,13 @@
 modLoader="javafml"
 loaderVersion="${forge_version_range}"
 license="GNU General Public License v3.0"
-issueTrackerURL="https://github.com/ApexModder/ItemResistance/issues"
+issueTrackerURL="${mod_git_url}/issues"
 
 [[mods]]
 	modId="${mod_id}"
 	version="${mod_version}"
 	displayName="${mod_name}"
-	updateJSONURL="https://raw.githubusercontent.com/ApexModder/Version/master/itemresistance.json"
+	updateJSONURL="https://raw.githubusercontent.com/ApexStudios-Dev/Version/master/itemresistance.json"
 	displayURL="https://www.curseforge.com/minecraft/mc-mods/itemresistance"
 	# logoFile="banner.png"
 	# credits=""
