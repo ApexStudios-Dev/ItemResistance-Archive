@@ -1,33 +1,28 @@
 modLoader="javafml"
-loaderVersion="[37,)"
-license="GNU"
-issueTrackerURL="https://github.com/ApexModder/ItemResistance/issues"
+loaderVersion="${forge_version_range}"
+license="GNU General Public License v3.0"
+issueTrackerURL="${mod_git_url}/issues"
 
 [[mods]]
-modId="itemresistance"
-version="${file.jarVersion}"
-displayName="ItemResistance"
-updateJSONURL="https://raw.githubusercontent.com/ApexModder/ItemResistance/main/update.json"
-displayURL="https://www.curseforge.com/minecraft/mc-mods/itemresistance"
-# logoFile="logo.png"
-# credits=""
-authors="ApexModder"
-description='''
-Gives dropped block items explosion resistance, as if they were placed.
+	modId="${mod_id}"
+	version="${mod_version}"
+	displayName="${mod_name}"
+	updateJSONURL="https://raw.githubusercontent.com/ApexStudios-Dev/Version/master/itemresistance.json"
+	displayURL="https://www.curseforge.com/minecraft/mc-mods/itemresistance"
+	# logoFile="banner.png"
+	# credits=""
+	authors="${mod_authors}"
+	description="Stops dropped items from exploding"
 
-TNT wont blow up dropped obisidan item stacks.
-'''
-
-[[dependencies.itemresistance]]
-    modId="forge"
-    mandatory=true
-    versionRange="[37,)"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.itemresistance]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.17.1,1.18]"
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.${mod_id}]]
+	modId="forge"
+	mandatory=true
+	versionRange="${forge_version_range}"
+	ordering="AFTER"
+	side="BOTH"
+[[dependencies.${mod_id}]]
+	modId="minecraft"
+	mandatory=true
+	versionRange="${minecraft_version_range}"
+	ordering="AFTER"
+	side="BOTH"
