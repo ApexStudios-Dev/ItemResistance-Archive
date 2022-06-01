@@ -1,13 +1,14 @@
 package xyz.apex.forge.itemresistance;
 
 import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -22,10 +23,10 @@ public final class ItemResistance
 
 	// tag to mark blocks as always exploding
 	// if bedrock has this tag, tnt can blow it up in item form
-	public static final Tag.Named<Block> FORCE_EXPLODE = tag("force_explode");
+	public static final Tag.Named<Item> FORCE_EXPLODE = tag("force_explode");
 	// tag to mark blocks always resisting
 	// if dirt has this tag, tnt can not blow it up in item form
-	public static final Tag.Named<Block> FORCE_RESIST = tag("force_resist");
+	public static final Tag.Named<Item> FORCE_RESIST = tag("force_resist");
 
 	public ItemResistance()
 	{
@@ -41,9 +42,18 @@ public final class ItemResistance
 		if(event.includeServer())
 		{
 			var generator = event.getGenerator();
+			var fileHelper = event.getExistingFileHelper();
+
+			var blockTagsProvider = new BlockTagsProvider(generator, MOD_ID, fileHelper) {
+				@Override
+				protected void addTags()
+				{
+					// NOOP : Dont create vanilla block tags
+				}
+			};
 
 			// register block tags generator
-			generator.addProvider(new BlockTagsProvider(generator, MOD_ID, event.getExistingFileHelper()) {
+			generator.addProvider(new ItemTagsProvider(generator, blockTagsProvider, MOD_ID, event.getExistingFileHelper()) {
 				@Override
 				protected void addTags()
 				{
@@ -56,9 +66,9 @@ public final class ItemResistance
 	}
 
 	// wrapper method to create block tags
-	private static Tag.Named<Block> tag(String name)
+	private static Tag.Named<Item> tag(String name)
 	{
-		return BlockTags.createOptional(new ResourceLocation(MOD_ID, name));
+		return ItemTags.createOptional(new ResourceLocation(MOD_ID, name));
 	}
 
 	public static float getExplosionSize(Explosion explosion)
@@ -90,25 +100,26 @@ public final class ItemResistance
 			if(entity instanceof ItemEntity itemEntity)
 			{
 				var stack = itemEntity.getItem();
+
+				// if block marked as always resisting
+				// keep the exploded item
+				if(stack.is(FORCE_RESIST))
+				{
+					itr.remove();
+					continue;
+				}
+
+				// if block marked as always exploding
+				// explode the item
+				if(stack.is(FORCE_EXPLODE))
+					continue;
+
 				var item = stack.getItem();
 
 				// check if dropped item is a block
 				if(item instanceof BlockItem blockItem)
 				{
 					var block = blockItem.getBlock();
-
-					// if block marked as always resisting
-					// keep the exploded item
-					if(FORCE_RESIST.contains(block))
-					{
-						itr.remove();
-						continue;
-					}
-
-					// if block marked as always exploding
-					// explode the item
-					if(FORCE_EXPLODE.contains(block))
-						continue;
 
 					// if we get here, block does not have our custom tags
 					// check for block resistance instead
