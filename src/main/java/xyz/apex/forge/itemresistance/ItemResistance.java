@@ -17,7 +17,7 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 @Mod(ItemResistance.MOD_ID)
-public class ItemResistance
+public final class ItemResistance
 {
 	public static final String MOD_ID = "itemresistance";
 
@@ -44,15 +44,16 @@ public class ItemResistance
 			var generator = event.getGenerator();
 			var fileHelper = event.getExistingFileHelper();
 
-			var emptyBlockTagsProvider = new BlockTagsProvider(generator, MOD_ID, fileHelper) {
+			var blockTagsProvider = new BlockTagsProvider(generator, MOD_ID, fileHelper) {
 				@Override
 				protected void addTags()
 				{
+					// NOOP : Dont create vanilla block tags
 				}
 			};
 
 			// register block tags generator
-			generator.addProvider(new ItemTagsProvider(generator, emptyBlockTagsProvider, MOD_ID, fileHelper) {
+			generator.addProvider(new ItemTagsProvider(generator, blockTagsProvider, MOD_ID, event.getExistingFileHelper()) {
 				@Override
 				protected void addTags()
 				{
@@ -77,7 +78,7 @@ public class ItemResistance
 		// we use reflection to obtain the value of this field
 		// ObfuscationReflectionHelper since Minecraft code is obfuscated outside of development
 		// (maps human readable name to obfuscated name)
-		Float explosionSize = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "f_46017_");
+		Float explosionSize = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "field_77280_f");
 		// getPrivateValue() is marked nullable
 		// simple null check to default to 0F
 		return explosionSize == null ? 0F : explosionSize;
@@ -99,25 +100,26 @@ public class ItemResistance
 			if(entity instanceof ItemEntity itemEntity)
 			{
 				var stack = itemEntity.getItem();
+
+				// if block marked as always resisting
+				// keep the exploded item
+				if(stack.is(FORCE_RESIST))
+				{
+					itr.remove();
+					continue;
+				}
+
+				// if block marked as always exploding
+				// explode the item
+				if(stack.is(FORCE_EXPLODE))
+					continue;
+
 				var item = stack.getItem();
 
 				// check if dropped item is a block
 				if(item instanceof BlockItem blockItem)
 				{
 					var block = blockItem.getBlock();
-
-					// if block marked as always resisting
-					// keep the exploded item
-					if(stack.is(FORCE_RESIST))
-					{
-						itr.remove();
-						continue;
-					}
-
-					// if block marked as always exploding
-					// explode the item
-					if(stack.is(FORCE_EXPLODE))
-						continue;
 
 					// if we get here, block does not have our custom tags
 					// check for block resistance instead

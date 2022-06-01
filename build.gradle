@@ -2,6 +2,7 @@ buildscript {
 	repositories {
 		maven { url = 'https://maven.minecraftforge.net' }
 		maven { url = 'https://maven.parchmentmc.org' }
+		maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
 		mavenCentral()
 	}
 	dependencies {
@@ -35,12 +36,14 @@ configurations {
 
 minecraft {
 	mappings channel: "${mappings_channel}", version: "${mappings_version}"
-	// accessTransformer = file('accesstransformer.cfg')
+	// *should not* be needed to function, but mod is developed in workspace where this is applied
+	// so best to include it just incase its used without realising it
+	accessTransformer = file('accesstransformer.cfg')
 
 	runs {
 		client {
 			taskName 'Client'
-			workingDirectory project.file('run/client')
+			workingDirectory file('run/client')
 			// property 'forge.logging.markers', 'REGISTRIES'
 			// property 'forge.logging.console.level', 'debug'
 			property 'fml.earlyprogresswindow', 'false'
@@ -63,7 +66,7 @@ minecraft {
 
 		server {
 			taskName 'Server'
-			workingDirectory project.file('run/server')
+			workingDirectory file('run/server')
 			// property 'forge.logging.markers', 'REGISTRIES'
 			// property 'forge.logging.console.level', 'debug'
 			property 'fml.earlyprogresswindow', 'false'
@@ -96,11 +99,11 @@ minecraft {
 
 		data {
 			taskName 'Data'
-			workingDirectory project.file('run/client')
+			workingDirectory file('run/client')
 			// property 'forge.logging.markers', 'REGISTRIES'
 			// property 'forge.logging.console.level', 'debug'
 			property 'fml.earlyprogresswindow', 'false'
-			args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+			args '--mod', mod_id, '--client', '--server', '--validate', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 			// ForgeGradle will just force-exit the Gradle Daemon which fails our builds in case
 			// a daemon is used for any reason.
 			forceExit false
@@ -120,15 +123,31 @@ minecraft.runs.all {
 	}
 }
 
+if(file("./src/main/resources/${mod_id}.mixins.json").exists()) {
+	mixin {
+		add sourceSets.main, "${mod_id}.refmap.json"
+		config "${mod_id}.mixins.json"
+	}
+}
+
 sourceSets.main.resources {
 	srcDir 'src/generated/resources'
 }
 
 repositories {
 	mavenCentral()
+	mavenLocal()
 	maven { url 'https://dvs1.progwml6.com/files/maven' }
 	maven { url 'https://maven.tterrag.com/' }
 	maven { url 'https://maven.apexmods.xyz/' }
+
+	maven {
+		url 'https://cursemaven.com'
+
+		content {
+			includeGroup "curse.maven"
+		}
+	}
 }
 
 dependencies {
@@ -139,7 +158,7 @@ dependencies {
 	runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 }
 
-def resourceTargets = [ 'META-INF/mods.toml', '**/*.mcmeta' ]
+def resourceTargets = [ 'META-INF/mods.toml', '**/*.mcmeta', "${mod_id}.mixins.json".toString() ]
 def intoTargets = [ "${projectDir}/out/production/resources/", "${projectDir}/out/production/${project.name}.main/", "${projectDir}/bin/main/" ]
 def replaceProperties = project.properties
 
@@ -171,11 +190,13 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 task deobfJar(type: Jar) {
 	classifier 'deobf'
 	from sourceSets.main.output
+	exclude '**/*bbmodel'
 }
 
 jar {
 	from sourceSets.main.output.classesDirs
 	from sourceSets.main.output.resourcesDir
+	exclude '**/*bbmodel'
 }
 
 artifacts {
@@ -185,27 +206,41 @@ artifacts {
 }
 
 if(System.getenv('GENERATE_CHANGELOG') != null) {
-    def previousGitTag = { ->
-        def code = new ByteArrayOutputStream()
+	def previousGitTag
+	def prefix = 'v'
+	def suffix = ''
 
-        exec {
-            commandLine 'git', 'describe', '--tags', '--match', 'v*', '--exclude', "v${mod_version}"
-            standardOutput code
-        }
+	if(mod_release_type == 'prerelease') {
+		prefix = 'pv'
+	} else if(mod_release_type == 'alpha' || mod_release_type == 'beta') {
+		suffix = "${mod_release_type}".toUpperCase()
+	}
 
-        return code.toString().trim().split('-')[0]
-    }
+	def currentGitTag = "${prefix}${mod_version}${suffix}"
 
-    task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
-        file = file("CHANGELOG.md")
-        fromRepo = file('.')
-        fromRef = "${previousGitTag}"
-        toRef = "v${mod_version}"
-        templateContent = file('.github/changelog.mustache').text
-		        .replace('{mod_version}', "${mod_version}")
-		        .replace('{mod_git_url}', "${mod_git_url}")
-		        .replace('{last_tag}', "${previousGitTag}")
-    }
+	try {
+		def code = new ByteArrayOutputStream()
+
+		exec {
+			commandLine 'git', 'describe', '--abbrev=0', '--tags', '--exclude', currentGitTag
+			standardOutput code
+		}
+
+		previousGitTag = code.toString().trim()
+	} catch(e) {
+		previousGitTag = ''
+	}
+
+	task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
+		file = file("CHANGELOG.md")
+		fromRepo = file('.')
+		fromRef = "${previousGitTag}"
+		toRef = "v${mod_version}"
+		templateContent = file('.github/changelog.mustache').text
+		                                                    .replace('{current_tag}', "${currentGitTag}")
+		                                                    .replace('{mod_git_url}', "${mod_git_url}")
+		                                                    .replace('{last_tag}', "${previousGitTag}")
+	}
 }
 
 tasks.withType(Jar) {
@@ -222,6 +257,12 @@ tasks.withType(Jar) {
 				'Implementation-Vendor' : "${mod_authors}",
 				'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 		])
+	}
+
+	if(file("./src/main/resources/${mod_id}.mixins.json").exists()) {
+		manifest {
+			attributes 'MixinConfigs': "${mod_id}.mixins.json"
+		}
 	}
 }
 
@@ -250,6 +291,22 @@ if(System.getenv('APEX_MODS_MAVEN_USERNAME') != null && System.getenv('APEX_MODS
 					password System.getenv('APEX_MODS_MAVEN_PASSWORD')
 				}
 			}
+		}
+	}
+} else {
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				groupId = "${mod_base_package}"
+				artifactId = "${mod_id}"
+				version = "${minecraft_version}-${mod_version}"
+				artifact jar
+				artifact sourcesJar
+				artifact deobfJar
+			}
+		}
+		repositories {
+			mavenLocal()
 		}
 	}
 }
