@@ -36,7 +36,9 @@ configurations {
 
 minecraft {
 	mappings channel: "${mappings_channel}", version: "${mappings_version}"
-	// accessTransformer = file('accesstransformer.cfg')
+	// *should not* be needed to function, but mod is developed in workspace where this is applied
+	// so best to include it just incase its used without realising it
+	accessTransformer = file('accesstransformer.cfg')
 
 	runs {
 		client {
