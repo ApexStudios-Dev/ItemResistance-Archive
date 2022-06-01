@@ -3,17 +3,19 @@ package xyz.apex.forge.itemresistance;
 import net.minecraft.block.Block;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.ItemTagsProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -29,10 +31,10 @@ public class ItemResistance
 
 	// tag to mark blocks as always exploding
 	// if bedrock has this tag, tnt can blow it up in item form
-	public static final ITag.INamedTag<Block> FORCE_EXPLODE = tag("force_explode");
+	public static final ITag.INamedTag<Item> FORCE_EXPLODE = tag("force_explode");
 	// tag to mark blocks always resisting
 	// if dirt has this tag, tnt can not blow it up in item form
-	public static final ITag.INamedTag<Block> FORCE_RESIST = tag("force_resist");
+	public static final ITag.INamedTag<Item> FORCE_RESIST = tag("force_resist");
 
 	public ItemResistance()
 	{
@@ -48,8 +50,18 @@ public class ItemResistance
 		if(event.includeServer())
 		{
 			DataGenerator generator = event.getGenerator();
+			ExistingFileHelper fileHelper = event.getExistingFileHelper();
+
+			BlockTagsProvider blockTagsProvider = new BlockTagsProvider(generator, MOD_ID, fileHelper) {
+				@Override
+				protected void addTags()
+				{
+					// NOOP : Dont create vanilla block tags
+				}
+			};
+
 			// register block tags generator
-			generator.addProvider(new BlockTagsProvider(generator, MOD_ID, event.getExistingFileHelper()) {
+			generator.addProvider(new ItemTagsProvider(generator, blockTagsProvider, MOD_ID, fileHelper) {
 				@Override
 				protected void addTags()
 				{
@@ -62,9 +74,9 @@ public class ItemResistance
 	}
 
 	// wrapper method to create block tags
-	private static ITag.INamedTag<Block> tag(String name)
+	private static ITag.INamedTag<Item> tag(String name)
 	{
-		return BlockTags.createOptional(new ResourceLocation(MOD_ID, name));
+		return ItemTags.createOptional(new ResourceLocation(MOD_ID, name));
 	}
 
 	public static float getExplosionSize(Explosion explosion)
@@ -102,12 +114,9 @@ public class ItemResistance
 				// check if dropped item is a block
 				if(item instanceof BlockItem)
 				{
-					BlockItem blockItem = (BlockItem) item;
-					Block block = blockItem.getBlock();
-
 					// if block marked as always resisting
 					// keep the exploded item
-					if(FORCE_RESIST.contains(block))
+					if(item.is(FORCE_RESIST))
 					{
 						itr.remove();
 						continue;
@@ -115,13 +124,14 @@ public class ItemResistance
 
 					// if block marked as always exploding
 					// explode the item
-					if(FORCE_EXPLODE.contains(block))
+					if(item.is(FORCE_EXPLODE))
 						continue;
+
+					Block block = ((BlockItem) item).getBlock();
 
 					// if we get here, block does not have our custom tags
 					// check for block resistance instead
 					// we keep item if block would not normally blow up
-
 					float resistance = block.getExplosionResistance();
 
 					// calculate explosion size
