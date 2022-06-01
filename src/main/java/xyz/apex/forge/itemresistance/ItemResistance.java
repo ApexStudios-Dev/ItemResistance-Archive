@@ -1,6 +1,5 @@
 package xyz.apex.forge.itemresistance;
 
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -17,7 +16,7 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 @Mod(ItemResistance.MOD_ID)
-public class ItemResistance
+public final class ItemResistance
 {
 	public static final String MOD_ID = "itemresistance";
 
@@ -41,7 +40,8 @@ public class ItemResistance
 		// only if we are generating server data files
 		if(event.includeServer())
 		{
-			DataGenerator generator = event.getGenerator();
+			var generator = event.getGenerator();
+
 			// register block tags generator
 			generator.addProvider(new BlockTagsProvider(generator, MOD_ID, event.getExistingFileHelper()) {
 				@Override
@@ -68,7 +68,7 @@ public class ItemResistance
 		// we use reflection to obtain the value of this field
 		// ObfuscationReflectionHelper since Minecraft code is obfuscated outside of development
 		// (maps human readable name to obfuscated name)
-		Float explosionSize = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "f_46017_");
+		Float explosionSize = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "field_77280_f");
 		// getPrivateValue() is marked nullable
 		// simple null check to default to 0F
 		return explosionSize == null ? 0F : explosionSize;
