@@ -5,7 +5,7 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath "org.parchmentmc:librarian:${librarian_version}"
+		// classpath "org.parchmentmc:librarian:${librarian_version}"
 	}
 }
 
