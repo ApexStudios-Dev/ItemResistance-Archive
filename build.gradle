@@ -12,16 +12,16 @@ buildscript {
 }
 
 plugins {
+	id 'org.parchmentmc.librarian.forgegradle'
+	id 'eclipse'
+	id 'idea'
+	id 'maven-publish'
+
+	id 'net.minecraftforge.gradle' version: "${}forge_gradle_version"
 	id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
 	id 'com.modrinth.minotaur' version "${minotaur_version}"
 	id 'se.bjurr.gitchangelog.git-changelog-gradle-plugin' version "${gradle_changelog_version}"
 }
-
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'maven-publish'
 
 version = "${minecraft_version}-${mod_version}"
 group = "${mod_base_package}.${mod_id}"
@@ -154,8 +154,8 @@ dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 	annotationProcessor "org.spongepowered:mixin:${mixin_ap_version}:processor"
 
-	compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
-	runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
+	// compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+	// runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 }
 
 def resourceTargets = [ 'META-INF/mods.toml', '**/*.mcmeta', "${mod_id}.mixins.json".toString() ]
@@ -241,6 +241,10 @@ if(System.getenv('GENERATE_CHANGELOG') != null) {
 		                                                    .replace('{mod_git_url}', "${mod_git_url}")
 		                                                    .replace('{last_tag}', "${previousGitTag}")
 	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
 }
 
 tasks.withType(Jar) {

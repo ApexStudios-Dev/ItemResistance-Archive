@@ -72,8 +72,8 @@ jobs:
           webhook_id: ${{ secrets.DISCORD_PRE_RELEASE_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_PRE_RELEASE_WEBHOOK_TOKEN }}
           color: '#b50e0e'
-          file: './build/libs/itemresistance-1.18.2-${{ steps.mod_version.outputs.value }}.jar'
-          message: 'Early version of **ItemResistance** v**_${{ steps.mod_version.outputs.value }}_** (**Minecraft** **_1.18.2_**) is available.'
+          file: './build/libs/itemresistance-1.19-${{ steps.mod_version.outputs.value }}.jar'
+          message: 'Early version of **ItemResistance** v**_${{ steps.mod_version.outputs.value }}_** (**Minecraft** **_1.19_**) is available.'
 
       - name: Stop Gradle Deamons
         run: ./gradlew --stop
