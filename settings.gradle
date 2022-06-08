@@ -1,3 +1,10 @@
+pluginManagement {
+	repositories {
+		gradlePluginPortal()
+		maven { url = 'https://maven.minecraftforge.net/' }
+	}
+}
+
 rootProject.name = "${mod_name}"
 
 gradle.beforeProject { prj ->
@@ -17,12 +24,5 @@ gradle.beforeProject { prj ->
 				}
 			}
 		}
-	}
-}
-
-pluginManagement {
-	repositories {
-		gradlePluginPortal()
-		maven { url = 'https://maven.minecraftforge.net/' }
 	}
 }

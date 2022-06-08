@@ -1,23 +1,21 @@
 buildscript {
 	repositories {
-		maven { url = 'https://maven.minecraftforge.net' }
-		maven { url = 'https://maven.parchmentmc.org' }
+		// maven { url = 'https://maven.parchmentmc.org' }
 		maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
 		mavenCentral()
 	}
 	dependencies {
-		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: "${forge_gradle_version}", changing: true
 		classpath "org.parchmentmc:librarian:${librarian_version}"
 	}
 }
 
 plugins {
-	id 'org.parchmentmc.librarian.forgegradle'
+	// id 'org.parchmentmc.librarian.forgegradle'
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
 
-	id 'net.minecraftforge.gradle' version: "${}forge_gradle_version"
+	id 'net.minecraftforge.gradle' version "${forge_gradle_version}"
 	id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
 	id 'com.modrinth.minotaur' version "${minotaur_version}"
 	id 'se.bjurr.gitchangelog.git-changelog-gradle-plugin' version "${gradle_changelog_version}"
