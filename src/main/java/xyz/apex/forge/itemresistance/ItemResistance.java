@@ -78,7 +78,7 @@ public final class ItemResistance
 		// we use reflection to obtain the value of this field
 		// ObfuscationReflectionHelper since Minecraft code is obfuscated outside of development
 		// (maps human readable name to obfuscated name)
-		Float explosionSize = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "field_77280_f");
+		Float explosionSize = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "f_46017_");
 		// getPrivateValue() is marked nullable
 		// simple null check to default to 0F
 		return explosionSize == null ? 0F : explosionSize;
