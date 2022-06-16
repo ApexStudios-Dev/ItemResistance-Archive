@@ -194,10 +194,11 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 	from sourceSets.main.resources
 }
 
-task deobfJar(type: Jar) {
+task deobfJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar.class) {
 	classifier 'deobf'
-	from sourceSets.main.output
 	exclude '**/*bbmodel'
+	from sourceSets.main.output
+	configurations = [ project.configurations.shade ]
 }
 
 jar {
