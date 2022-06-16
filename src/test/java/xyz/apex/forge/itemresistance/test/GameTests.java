@@ -15,9 +15,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import xyz.apex.forge.commonality.init.Mods;
 import xyz.apex.forge.itemresistance.ItemResistance;
 
-@GameTestHolder(ItemResistance.MOD_ID)
+@GameTestHolder(Mods.ITEM_RESISTANCE)
 @PrefixGameTestTemplate(false)
 public final class GameTests
 {
