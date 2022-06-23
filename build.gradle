@@ -164,7 +164,7 @@ jar {
 shadowJar {
 	classifier ''
 	configurations = [ project.configurations.shade ]
-	relocate "${mod_base_package}:${commonality_mod_id}", "xyz.apex.repack.${mod_base_package}:${commonality_mod_id}"
+	relocate "${mod_base_package}.${commonality_mod_id}", "xyz.apex.repack.${mod_base_package}.${commonality_mod_id}"
 	exclude '**/*bbmodel'
 }
 
