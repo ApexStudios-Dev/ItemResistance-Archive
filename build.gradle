@@ -1,25 +1,24 @@
 buildscript {
 	repositories {
-		maven { url = 'https://maven.minecraftforge.net' }
-		maven { url = 'https://maven.parchmentmc.org' }
-		maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+		maven { url 'https://maven.minecraftforge.net' }
+		maven { url 'https://repo.spongepowered.org/repository/maven-public/' }
 		mavenCentral()
 	}
 	dependencies {
-		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: "${forge_gradle_version}", changing: true
-		classpath "org.parchmentmc:librarian:${librarian_version}"
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+		classpath 'org.spongepowered:mixingradle:0.7.+'
 	}
 }
 
 plugins {
-	id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
-	id 'com.modrinth.minotaur' version "${minotaur_version}"
-	id 'se.bjurr.gitchangelog.git-changelog-gradle-plugin' version "${gradle_changelog_version}"
 	id 'com.github.johnrengelman.shadow' version '7.1.2'
+	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id 'com.modrinth.minotaur' version '2.+'
+	id 'se.bjurr.gitchangelog.git-changelog-gradle-plugin' version '1.71.8'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
+apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
@@ -38,10 +37,8 @@ configurations {
 }
 
 minecraft {
-	mappings channel: "${mappings_channel}", version: "${mappings_version}"
-	// *should not* be needed to function, but mod is developed in workspace where this is applied
-	// so best to include it just incase its used without realising it
-	accessTransformer = file('accesstransformer.cfg')
+	mappings channel: 'official', version: "${minecraft_version}"
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
 	runs {
 		client {
@@ -50,7 +47,6 @@ minecraft {
 			// property 'forge.logging.markers', 'REGISTRIES'
 			// property 'forge.logging.console.level', 'debug'
 			property 'fml.earlyprogresswindow', 'false'
-			property 'forge.enabledGameTestNamespaces', mod_id
 
 			mods {
 				"${mod_id}" {
@@ -73,25 +69,7 @@ minecraft {
 			// property 'forge.logging.markers', 'REGISTRIES'
 			// property 'forge.logging.console.level', 'debug'
 			property 'fml.earlyprogresswindow', 'false'
-			property 'forge.enabledGameTestNamespaces', mod_id
 			args 'nogui'
-
-			mods {
-				"${mod_id}" {
-					source sourceSets.main
-				}
-			}
-		}
-
-		gameTestServer {
-			taskName 'GameTestServer'
-			workingDirectory rootProject.file('run/server')
-			// property 'forge.logging.markers', 'REGISTRIES'
-			// property 'forge.logging.console.level', 'debug'
-			property 'fml.earlyprogresswindow', 'false'
-			property 'forge.enabledGameTestNamespaces', mod_id
-			args 'nogui'
-			singleInstance true
 
 			mods {
 				"${mod_id}" {
@@ -155,37 +133,13 @@ repositories {
 
 dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-	annotationProcessor "org.spongepowered:mixin:${mixin_ap_version}:processor"
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
 	compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
 	runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-	implementation fg.deobf("xyz.apex.forge:commonality:${minecraft_version}-${commonality_version}:deobf")
-	shade "xyz.apex.forge:commonality:${minecraft_version}-${commonality_version}"
-
-}
-
-def resourceTargets = [ 'META-INF/mods.toml', '**/*.mcmeta', "${mod_id}.mixins.json".toString() ]
-def intoTargets = [ "${projectDir}/out/production/resources/", "${projectDir}/out/production/${project.name}.main/", "${projectDir}/bin/main/" ]
-def replaceProperties = project.properties
-
-processResources {
-	filesMatching(resourceTargets) {
-		expand replaceProperties
-	}
-
-	intoTargets.each { target ->
-		if(file(target).exists()) {
-			copy{
-				from(sourceSets.main.resources) {
-					include resourceTargets
-					expand replaceProperties
-				}
-
-				into target
-			}
-		}
-	}
+	implementation fg.deobf("${mod_base_package}:${commonality_mod_id}:${minecraft_version}-${commonality_version}")
+	shade "${mod_base_package}:${commonality_mod_id}:${minecraft_version}-${commonality_version}"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -194,23 +148,24 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 	from sourceSets.main.resources
 }
 
-task deobfJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar.class) {
+task deobfJar(type: Jar) {
 	classifier 'deobf'
 	exclude '**/*bbmodel'
 	from sourceSets.main.output
-	configurations = [ project.configurations.shade ]
-	relocate "xyz.apex.forge.${commonality_mod_id}", "xyz.apex.forge.itemresistance.repack.${commonality_mod_id}"
 }
 
 jar {
+	classifier 'slim'
+	exclude '**/*bbmodel'
 	from sourceSets.main.output.classesDirs
 	from sourceSets.main.output.resourcesDir
-	exclude '**/*bbmodel'
 }
 
 shadowJar {
+	classifier ''
 	configurations = [ project.configurations.shade ]
-	relocate 'xyz.apex.forge.commonality', 'xyz.apex.forge.itemresistance.repack.commonality'
+	relocate "${mod_base_package}:${commonality_mod_id}", "xyz.apex.repack.${mod_base_package}:${commonality_mod_id}"
+	exclude '**/*bbmodel'
 }
 
 artifacts {
@@ -219,13 +174,6 @@ artifacts {
 	archives deobfJar
 	archives shadowJar
 }
-
-reobf {
-	shadowJar { }
-}
-
-build.dependsOn shadowJar
-build.dependsOn reobfShadowJar
 
 if(System.getenv('GENERATE_CHANGELOG') != null) {
 	def previousGitTag
@@ -288,7 +236,12 @@ tasks.withType(Jar) {
 	}
 }
 
+reobf {
+	shadowJar { }
+}
+
 jar.finalizedBy('reobfJar')
+shadowJar.finalizedBy('reobfShadowJar')
 
 if(System.getenv('APEX_MODS_MAVEN_USERNAME') != null && System.getenv('APEX_MODS_MAVEN_PASSWORD') != null) {
 	publishing {
