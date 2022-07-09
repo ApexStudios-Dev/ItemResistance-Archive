@@ -224,7 +224,12 @@ tasks.withType(Jar) {
 	}
 }
 
+reobf {
+	shadowJar { }
+}
+
 jar.finalizedBy('reobfJar')
+shadowJar.finalizedBy('reobfShadowJar')
 
 if(System.getenv('APEX_MODS_MAVEN_USERNAME') != null && System.getenv('APEX_MODS_MAVEN_PASSWORD') != null) {
 	publishing {
