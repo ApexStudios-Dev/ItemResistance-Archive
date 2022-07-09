@@ -1,28 +1,19 @@
-buildscript {
-	repositories {
-		// maven { url = 'https://maven.parchmentmc.org' }
-		maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-		mavenCentral()
-	}
-	dependencies {
-		// classpath "org.parchmentmc:librarian:${librarian_version}"
-	}
-}
-
 plugins {
-	// id 'org.parchmentmc.librarian.forgegradle'
+	id 'java'
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
 
-	id 'net.minecraftforge.gradle' version "${forge_gradle_version}"
-	id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
-	id 'com.modrinth.minotaur' version "${minotaur_version}"
-	id 'se.bjurr.gitchangelog.git-changelog-gradle-plugin' version "${gradle_changelog_version}"
+	id 'com.github.johnrengelman.shadow' version '7.1.2'
+	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id 'com.modrinth.minotaur' version '2.+'
+	id 'se.bjurr.gitchangelog.git-changelog-gradle-plugin' version '1.71.8'
+	id 'net.minecraftforge.gradle' version '5.1.+'
+	id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 version = "${minecraft_version}-${mod_version}"
-group = "${mod_base_package}.${mod_id}"
+group = "${mod_base_package}"
 archivesBaseName = "${mod_id}"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -30,13 +21,13 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 configurations {
 	library
 	implementation.extendsFrom library
+
+	shade
 }
 
 minecraft {
-	mappings channel: "${mappings_channel}", version: "${mappings_version}"
-	// *should not* be needed to function, but mod is developed in workspace where this is applied
-	// so best to include it just incase its used without realising it
-	accessTransformer = file('accesstransformer.cfg')
+	mappings channel: 'official', version: "${minecraft_version}"
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
 	runs {
 		client {
@@ -45,7 +36,6 @@ minecraft {
 			// property 'forge.logging.markers', 'REGISTRIES'
 			// property 'forge.logging.console.level', 'debug'
 			property 'fml.earlyprogresswindow', 'false'
-			property 'forge.enabledGameTestNamespaces', mod_id
 
 			mods {
 				"${mod_id}" {
@@ -68,25 +58,7 @@ minecraft {
 			// property 'forge.logging.markers', 'REGISTRIES'
 			// property 'forge.logging.console.level', 'debug'
 			property 'fml.earlyprogresswindow', 'false'
-			property 'forge.enabledGameTestNamespaces', mod_id
 			args 'nogui'
-
-			mods {
-				"${mod_id}" {
-					source sourceSets.main
-				}
-			}
-		}
-
-		gameTestServer {
-			taskName 'GameTestServer'
-			workingDirectory rootProject.file('run/server')
-			// property 'forge.logging.markers', 'REGISTRIES'
-			// property 'forge.logging.console.level', 'debug'
-			property 'fml.earlyprogresswindow', 'false'
-			property 'forge.enabledGameTestNamespaces', mod_id
-			args 'nogui'
-			singleInstance true
 
 			mods {
 				"${mod_id}" {
@@ -150,33 +122,14 @@ repositories {
 
 dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-	annotationProcessor "org.spongepowered:mixin:${mixin_ap_version}:processor"
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-	// compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
-	// runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
-}
+	// compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+	// compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+	// runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
-def resourceTargets = [ 'META-INF/mods.toml', '**/*.mcmeta', "${mod_id}.mixins.json".toString() ]
-def intoTargets = [ "${projectDir}/out/production/resources/", "${projectDir}/out/production/${project.name}.main/", "${projectDir}/bin/main/" ]
-def replaceProperties = project.properties
-
-processResources {
-	filesMatching(resourceTargets) {
-		expand replaceProperties
-	}
-
-	intoTargets.each { target ->
-		if(file(target).exists()) {
-			copy{
-				from(sourceSets.main.resources) {
-					include resourceTargets
-					expand replaceProperties
-				}
-
-				into target
-			}
-		}
-	}
+	implementation fg.deobf("${mod_base_package}:${commonality_mod_id}:${minecraft_version}-${commonality_version}")
+	shade "${mod_base_package}:${commonality_mod_id}:${minecraft_version}-${commonality_version}"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -185,23 +138,30 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 	from sourceSets.main.resources
 }
 
-task deobfJar(type: Jar) {
-	classifier 'deobf'
-	from sourceSets.main.output
-	exclude '**/*bbmodel'
-}
-
 jar {
+	classifier 'slim'
 	from sourceSets.main.output.classesDirs
 	from sourceSets.main.output.resourcesDir
-	exclude '**/*bbmodel'
+}
+
+shadowJar {
+	classifier ''
+	configurations = [ project.configurations.shade ]
+	relocate "${mod_base_package}.${commonality_mod_id}", "xyz.apex.repack.${mod_base_package}.${commonality_mod_id}"
 }
 
 artifacts {
 	archives jar
 	archives sourcesJar
-	archives deobfJar
+	archives shadowJar
 }
+
+reobf {
+	shadowJar { }
+}
+
+jar.finalizedBy('reobfJar')
+shadowJar.finalizedBy('reobfShadowJar')
 
 if(System.getenv('GENERATE_CHANGELOG') != null) {
 	def previousGitTag
@@ -241,10 +201,6 @@ if(System.getenv('GENERATE_CHANGELOG') != null) {
 	}
 }
 
-tasks.withType(JavaCompile).configureEach {
-	options.encoding = 'UTF-8'
-}
-
 tasks.withType(Jar) {
 	from file('CHANGELOG.md')
 	from file('LICENSE')
@@ -280,7 +236,6 @@ if(System.getenv('APEX_MODS_MAVEN_USERNAME') != null && System.getenv('APEX_MODS
 
 				artifact jar
 				artifact sourcesJar
-				artifact deobfJar
 			}
 		}
 		repositories {
@@ -304,7 +259,6 @@ if(System.getenv('APEX_MODS_MAVEN_USERNAME') != null && System.getenv('APEX_MODS
 				version = "${minecraft_version}-${mod_version}"
 				artifact jar
 				artifact sourcesJar
-				artifact deobfJar
 			}
 		}
 		repositories {
@@ -324,9 +278,8 @@ if(System.getenv('CURSEFORGE_TOKEN') != null) {
 			changelogType = 'markdown'
 			changelog = file('CHANGELOG.md').text
 
-			mainArtifact jar
+			mainArtifact shadowJar
 			addArtifact sourcesJar
-			addArtifact deobfJar
 		}
 
 		options {
@@ -342,8 +295,8 @@ if(System.getenv('MODRINTH_TOKEN') != null) {
 		versionNumber = "${mod_version}"
 		versionName = "${mod_name}-${minecraft_version}-${mod_version}"
 		versionType = "${mod_release_type}"
-		uploadFile = jar
-		additionalFiles = [ sourcesJar, deobfJar ]
+		uploadFile = shadowJar
+		additionalFiles = [ sourcesJar ]
 		gameVersions = [ "${minecraft_version}" ]
 		changelog = file('CHANGELOG.md').text
 		loaders = [ 'forge' ]

@@ -2,8 +2,6 @@ package xyz.apex.forge.itemresistance;
 
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
@@ -16,17 +14,18 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
-@Mod(ItemResistance.MOD_ID)
+import xyz.apex.forge.commonality.Mods;
+import xyz.apex.forge.commonality.tags.ItemTags;
+
+@Mod(Mods.ITEM_RESISTANCE)
 public final class ItemResistance
 {
-	public static final String MOD_ID = "itemresistance";
-
 	// tag to mark blocks as always exploding
 	// if bedrock has this tag, tnt can blow it up in item form
-	public static final TagKey<Item> FORCE_EXPLODE = tag("force_explode");
+	public static final TagKey<Item> FORCE_EXPLODE = ItemTags.tag(Mods.ITEM_RESISTANCE, "force_explode");
 	// tag to mark blocks always resisting
 	// if dirt has this tag, tnt can not blow it up in item form
-	public static final TagKey<Item> FORCE_RESIST = tag("force_resist");
+	public static final TagKey<Item> FORCE_RESIST = ItemTags.tag(Mods.ITEM_RESISTANCE, "force_resist");
 
 	public ItemResistance()
 	{
@@ -38,37 +37,29 @@ public final class ItemResistance
 
 	private void onGatherData(GatherDataEvent event)
 	{
-		// only if we are generating server data files
-		if(event.includeServer())
-		{
-			var generator = event.getGenerator();
-			var fileHelper = event.getExistingFileHelper();
+		var generator = event.getGenerator();
+		var fileHelper = event.getExistingFileHelper();
 
-			var blockTagsProvider = new BlockTagsProvider(generator, MOD_ID, fileHelper) {
-				@Override
-				protected void addTags()
-				{
-					// NOOP : Dont create vanilla block tags
-				}
-			};
+		var includeServer = event.includeServer();
 
-			// register block tags generator
-			generator.addProvider(true, new ItemTagsProvider(generator, blockTagsProvider, MOD_ID, event.getExistingFileHelper()) {
-				@Override
-				protected void addTags()
-				{
-					// generate empty tags
-					tag(FORCE_EXPLODE);
-					tag(FORCE_RESIST);
-				}
-			});
-		}
-	}
+		var blockTagsProvider = new BlockTagsProvider(generator, Mods.ITEM_RESISTANCE, fileHelper) {
+			@Override
+			protected void addTags()
+			{
+				// NOOP : Dont create vanilla block tags
+			}
+		};
 
-	// wrapper method to create block tags
-	private static TagKey<Item> tag(String name)
-	{
-		return ItemTags.create(new ResourceLocation(MOD_ID, name));
+		// register block tags generator
+		generator.addProvider(includeServer, new ItemTagsProvider(generator, blockTagsProvider, Mods.ITEM_RESISTANCE, event.getExistingFileHelper()) {
+			@Override
+			protected void addTags()
+			{
+				// generate empty tags
+				tag(FORCE_EXPLODE);
+				tag(FORCE_RESIST);
+			}
+		});
 	}
 
 	public static float getExplosionSize(Explosion explosion)
