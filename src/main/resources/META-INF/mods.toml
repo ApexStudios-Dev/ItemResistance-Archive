@@ -18,12 +18,24 @@ issueTrackerURL="https://github.com/ApexStudios-Dev/ItemResistance/issues"
 [[dependencies.itemresistance]]
 	modId="forge"
 	mandatory=true
-	versionRange="[41,)"
+	versionRange="[41.0.88,)"
 	ordering="AFTER"
 	side="BOTH"
 [[dependencies.itemresistance]]
 	modId="minecraft"
 	mandatory=true
 	versionRange="[1.19,1.20)"
+	ordering="AFTER"
+	side="BOTH"
+[[dependencies.itemresistance]]
+	modId="commonality"
+	mandatory=true
+	versionRange="[2.0.0,3.0.0)"
+	ordering="AFTER"
+	side="BOTH"
+[[dependencies.itemresistance]]
+	modId="apexcore"
+	mandatory=false
+	versionRange="[5.0.0,6.0.0)"
 	ordering="AFTER"
 	side="BOTH"
