@@ -18,7 +18,7 @@ issueTrackerURL="https://github.com/ApexStudios-Dev/ItemResistance/issues"
 [[dependencies.itemresistance]]
 	modId="forge"
 	mandatory=true
-	versionRange="[41.0.88,)"
+	versionRange="[41.0.98,)"
 	ordering="AFTER"
 	side="BOTH"
 [[dependencies.itemresistance]]
