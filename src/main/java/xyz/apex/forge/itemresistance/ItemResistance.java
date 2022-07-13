@@ -8,11 +8,11 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Explosion;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import xyz.apex.forge.commonality.Mods;
 import xyz.apex.forge.commonality.tags.ItemTags;
@@ -77,7 +77,7 @@ public final class ItemResistance
 
 	private void onExplosionDetonate(ExplosionEvent.Detonate event)
 	{
-		var world = event.getWorld();
+		var world = event.getLevel();
 		var explosion = event.getExplosion();
 		var explosionSize = getExplosionSize(explosion);
 		var itr = event.getAffectedEntities().iterator();
