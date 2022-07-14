@@ -142,6 +142,7 @@ dependencies {
 	compileOnly "xyz.apex.java.utility:JavaUtilities:${java_utilities_version}:api-javadoc"
 	runtimeOnly "xyz.apex.java.utility:JavaUtilities:${java_utilities_version}"
 	library "xyz.apex.java.utility:JavaUtilities:${java_utilities_version}"
+	jarJar(group: 'xyz.apex.java.utility', name: 'JavaUtilities', version: "${java_utilities_version_range}")
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
