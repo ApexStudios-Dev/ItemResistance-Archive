@@ -16,6 +16,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Install JQ
+        uses: sudo apt-get install jq -y
+
       - name: Checkout Repository
         uses: actions/checkout@v3
 
@@ -56,6 +59,10 @@ jobs:
       - name: Give Gradle Execute Permissions
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: chmod +x ./gradlew
+
+      - name: Give RenderTypes script Execute Permissions
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: chmod +x ./render_types.sh
 
       - name: Generate Mod Data & Asset Files
         run: ./gradlew data
