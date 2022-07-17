@@ -47,10 +47,13 @@ minecraft {
 			// property 'forge.logging.markers', 'REGISTRIES'
 			// property 'forge.logging.console.level', 'debug'
 			property 'fml.earlyprogresswindow', 'false'
+			property 'forge.enableGameTest', 'true'
+			property 'forge.enabledGameTestNamespaces', "${mod_id}"
 
 			mods {
 				"${mod_id}" {
 					source sourceSets.main
+					source sourceSets.test
 				}
 			}
 		}
@@ -69,11 +72,33 @@ minecraft {
 			// property 'forge.logging.markers', 'REGISTRIES'
 			// property 'forge.logging.console.level', 'debug'
 			property 'fml.earlyprogresswindow', 'false'
+			property 'forge.enableGameTest', 'true'
+			property 'forge.enabledGameTestNamespaces', "${mod_id}"
 			args 'nogui'
 
 			mods {
 				"${mod_id}" {
 					source sourceSets.main
+					source sourceSets.test
+				}
+			}
+		}
+
+		gameTestServer {
+			taskName 'GameTest-Server'
+			workingDirectory file('run/server')
+			// property 'forge.logging.markers', 'REGISTRIES'
+			// property 'forge.logging.console.level', 'debug'
+			property 'fml.earlyprogresswindow', 'false'
+			property 'forge.enableGameTest', 'true'
+			property 'forge.enabledGameTestNamespaces', "${mod_id}"
+			args 'nogui'
+			forceExit false
+
+			mods {
+				"${mod_id}" {
+					source sourceSets.main
+					source sourceSets.test
 				}
 			}
 		}
