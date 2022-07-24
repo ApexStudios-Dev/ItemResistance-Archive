@@ -166,13 +166,6 @@ dependencies {
 		implementation fg.deobf("${mod_base_package}:${commonality_mod_id}-${minecraft_version}:${commonality_version}")
 		jarJar(group: "${mod_base_package}", name: "${commonality_mod_id}-${minecraft_version}", version: "${commonality_version_range}")
 	}
-
-	compileOnly "xyz.apex.java.utility:JavaUtilities:${java_utilities_version}:api"
-	compileOnly "xyz.apex.java.utility:JavaUtilities:${java_utilities_version}:api-sources"
-	compileOnly "xyz.apex.java.utility:JavaUtilities:${java_utilities_version}:api-javadoc"
-	runtimeOnly "xyz.apex.java.utility:JavaUtilities:${java_utilities_version}"
-	library "xyz.apex.java.utility:JavaUtilities:${java_utilities_version}"
-	jarJar(group: 'xyz.apex.java.utility', name: 'JavaUtilities', version: "${java_utilities_version_range}")
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
