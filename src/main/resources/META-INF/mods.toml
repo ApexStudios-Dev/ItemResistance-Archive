@@ -11,7 +11,7 @@ issueTrackerURL="https://github.com/ApexStudios-Dev/ItemResistance/issues"
 	displayURL="https://apexstudios.dev/apexcore"
 	# logoFile="banner.png"
 	credits="Apex - Programming"
-	authors="Apex"
+	authors="ApexStudios"
 	description="Stops dropped items from exploding"
 	displayTest="MATCH_VERSION"
 
