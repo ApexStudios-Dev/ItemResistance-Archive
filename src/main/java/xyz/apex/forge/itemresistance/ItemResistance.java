@@ -37,12 +37,13 @@ public final class ItemResistance
 
 	private void onGatherData(GatherDataEvent event)
 	{
-		// only if we are generating server data files
-		if(event.includeServer())
-		{
-			var generator = event.getGenerator();
-			var fileHelper = event.getExistingFileHelper();
+		var generator = event.getGenerator();
+		var fileHelper = event.getExistingFileHelper();
 
+		var includeServer = event.includeServer();
+
+		if(includeServer)
+		{
 			var blockTagsProvider = new BlockTagsProvider(generator, Mods.ITEM_RESISTANCE, fileHelper) {
 				@Override
 				protected void addTags()
