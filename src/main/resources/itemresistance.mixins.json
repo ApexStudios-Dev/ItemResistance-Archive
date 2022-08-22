@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "xyz.apex.forge.itemresistance.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"refmap": "itemresistance.refmap.json",
+	"mixins": [
+		"ExplosionMixin"
+	],
+	"client": [ ],
+	"server": [ ],
+	"minVersion": "0.8.4"
+}

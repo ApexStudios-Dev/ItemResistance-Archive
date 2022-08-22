@@ -7,7 +7,9 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -20,12 +22,18 @@ import xyz.apex.forge.commonality.tags.ItemTags;
 @Mod(Mods.ITEM_RESISTANCE)
 public final class ItemResistance
 {
+	// translation key for text shown when explosion is denied
+	public static final String TXT_EXPlOSION_DISABLED = "txt.%s.explosions_disabled".formatted(Mods.ITEM_RESISTANCE);
 	// tag to mark blocks as always exploding
 	// if bedrock has this tag, tnt can blow it up in item form
 	public static final TagKey<Item> FORCE_EXPLODE = ItemTags.tag(Mods.ITEM_RESISTANCE, "force_explode");
 	// tag to mark blocks always resisting
 	// if dirt has this tag, tnt can not blow it up in item form
 	public static final TagKey<Item> FORCE_RESIST = ItemTags.tag(Mods.ITEM_RESISTANCE, "force_resist");
+	// register new gamerule that disables explosions
+	// defaults to false (do not deny explosions)
+	// if set to true explosions are denied
+	public static final GameRules.Key<GameRules.BooleanValue> GAMERULE_EXPLOSIONS_DISABLED = GameRules.register("%s:explosionsDisabled".formatted(Mods.ITEM_RESISTANCE), GameRules.Category.DROPS, GameRules.BooleanValue.create(false));
 
 	public ItemResistance()
 	{
@@ -40,6 +48,7 @@ public final class ItemResistance
 		var generator = event.getGenerator();
 		var fileHelper = event.getExistingFileHelper();
 
+		var includeClient = event.includeClient();
 		var includeServer = event.includeServer();
 
 		if(includeServer)
@@ -60,6 +69,19 @@ public final class ItemResistance
 					// generate empty tags
 					tag(FORCE_EXPLODE);
 					tag(FORCE_RESIST);
+				}
+			});
+		}
+
+		// register language generator (en_us)
+		if(includeClient)
+		{
+			generator.addProvider(new LanguageProvider(generator, Mods.ITEM_RESISTANCE, "en_us") {
+				@Override
+				protected void addTranslations()
+				{
+					add(TXT_EXPlOSION_DISABLED, "Explosions have been disabled via the GameRule: %s");
+					add(GAMERULE_EXPLOSIONS_DISABLED.getDescriptionId(), "ExplosionsDisabled");
 				}
 			});
 		}
