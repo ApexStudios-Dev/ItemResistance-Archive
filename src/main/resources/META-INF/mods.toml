@@ -34,7 +34,7 @@ issueTrackerURL="https://github.com/ApexStudios-Dev/ItemResistance/issues"
 [[dependencies.itemresistance]]
 	modId="commonality"
 	mandatory=true
-	versionRange="[4.1.1,5.0.0)"
+	versionRange="[4.1.3,5.0.0)"
 	ordering="AFTER"
 	side="BOTH"
 	[dependencies.itemresistance.custom.mc-publish]
