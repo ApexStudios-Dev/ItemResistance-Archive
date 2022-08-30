@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://apexstudios.dev/apexcore"><img src="https://github.com/ApexStudios-Dev/.github/blob/master/itemresistance.png?raw=true" width=20%></a>
+<a href="https://apexstudios.dev/apexcore"><img src="https://github.com/ApexStudios-Dev/.github/blob/master/assets/minecraft/itemresistance.png?raw=true" width=20%></a>
 
 <h1><i><b>Stops dropped items from exploding</b></i></h1>
 <br>
