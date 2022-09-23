@@ -42,7 +42,7 @@ issueTrackerURL="https://github.com/ApexStudios-Dev/ItemResistance/issues"
 [[dependencies.itemresistance]]
 	modId="apexcore"
 	mandatory=false
-	versionRange="[7.1.8,8.0.0)"
+	versionRange="[7.2.2,8.0.0)"
 	ordering="AFTER"
 	side="BOTH"
 	[dependencies.itemresistance.custom.mc-publish]
