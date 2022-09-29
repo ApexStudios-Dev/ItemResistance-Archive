@@ -18,6 +18,7 @@ import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 import xyz.apex.forge.commonality.Mods;
 import xyz.apex.forge.commonality.tags.ItemTags;
+import xyz.apex.forge.commonality.trust.TrustManager;
 
 @Mod(Mods.ITEM_RESISTANCE)
 public final class ItemResistance
@@ -37,6 +38,8 @@ public final class ItemResistance
 
 	public ItemResistance()
 	{
+		// ensure downloaded from trustworthy source
+		TrustManager.throwIfUntrusted(Mods.ITEM_RESISTANCE);
 		// register event listener for detonate events
 		MinecraftForge.EVENT_BUS.addListener(this::onExplosionDetonate);
 		// register event listener for data generation
