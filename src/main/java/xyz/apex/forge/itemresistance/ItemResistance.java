@@ -1,6 +1,6 @@
 package xyz.apex.forge.itemresistance;
 
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.level.ExplosionEvent;
@@ -50,22 +51,24 @@ public final class ItemResistance
 	{
 		var generator = event.getGenerator();
 		var fileHelper = event.getExistingFileHelper();
+		var output = generator.getPackOutput();
+		var lookupProvider = event.getLookupProvider();
 
 		var includeClient = event.includeClient();
 		var includeServer = event.includeServer();
 
-		var blockTagsProvider = new BlockTagsProvider(generator, Mods.ITEM_RESISTANCE, fileHelper) {
+		var blockTagsProvider = new BlockTagsProvider(output, lookupProvider, Mods.ITEM_RESISTANCE, fileHelper) {
 			@Override
-			protected void addTags()
+			protected void addTags(HolderLookup.Provider provider)
 			{
 				// NOOP : Dont create vanilla block tags
 			}
 		};
 
 		// register block tags generator
-		generator.addProvider(includeServer, new ItemTagsProvider(generator, blockTagsProvider, Mods.ITEM_RESISTANCE, event.getExistingFileHelper()) {
+		generator.addProvider(includeServer, new ItemTagsProvider(output, lookupProvider, blockTagsProvider, Mods.ITEM_RESISTANCE, event.getExistingFileHelper()) {
 			@Override
-			protected void addTags()
+			protected void addTags(HolderLookup.Provider provider)
 			{
 				// generate empty tags
 				tag(FORCE_EXPLODE);
