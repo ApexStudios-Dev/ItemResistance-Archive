@@ -77,7 +77,7 @@ public final class ItemResistance
 		});
 
 		// register language generator (en_us)
-		generator.addProvider(includeClient, new LanguageProvider(generator, Mods.ITEM_RESISTANCE, "en_us") {
+		generator.addProvider(includeClient, new LanguageProvider(output, Mods.ITEM_RESISTANCE, "en_us") {
 			@Override
 			protected void addTranslations()
 			{
