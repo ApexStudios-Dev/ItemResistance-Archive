@@ -277,7 +277,7 @@ if(System.getenv('DISCORD_CHANGELOG_WEBHOOK_URL') != null) {
 									author: [
 											name: "${mod_name}",
 											url: "https://github.com/ApexStudios-Dev/${mod_name}/tree/${minecraft_version}",
-											icon_url: "https://raw.githubusercontent.com/ApexStudios-Dev/.github/master/assets/minecraft/${mod_id}_logo.png"
+											icon_url: "https://raw.githubusercontent.com/ApexStudios-Dev/.github/master/assets/minecraft/${mod_id}.png"
 									],
 									fields: [
 											[
