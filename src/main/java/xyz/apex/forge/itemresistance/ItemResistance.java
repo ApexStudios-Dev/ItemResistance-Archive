@@ -6,6 +6,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.common.MinecraftForge;
@@ -57,16 +58,16 @@ public final class ItemResistance
 		var includeClient = event.includeClient();
 		var includeServer = event.includeServer();
 
-		var blockTagsProvider = new BlockTagsProvider(output, lookupProvider, Mods.ITEM_RESISTANCE, fileHelper) {
+		var blockTagsProvider = generator.addProvider(includeServer, new BlockTagsProvider(output, lookupProvider, Mods.ITEM_RESISTANCE, fileHelper) {
 			@Override
 			protected void addTags(HolderLookup.Provider provider)
 			{
 				// NOOP : Dont create vanilla block tags
 			}
-		};
+		});
 
 		// register block tags generator
-		generator.addProvider(includeServer, new ItemTagsProvider(output, lookupProvider, blockTagsProvider, Mods.ITEM_RESISTANCE, event.getExistingFileHelper()) {
+		generator.addProvider(includeServer, new ItemTagsProvider(output, lookupProvider, blockTagsProvider.contentsGetter(), Mods.ITEM_RESISTANCE, event.getExistingFileHelper()) {
 			@Override
 			protected void addTags(HolderLookup.Provider provider)
 			{
