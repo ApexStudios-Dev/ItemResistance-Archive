@@ -351,10 +351,6 @@ if(System.getenv('CURSEFORGE_TOKEN') != null) {
 			addGameVersion "${minecraft_version}"
 			changelog = tasks.createChangelog.outputFile.asFile.get()
 
-			relations {
-
-			}
-
 			mainArtifact tasks.jarJar
 			addArtifact jar
 			addArtifact sourcesJar
@@ -374,9 +370,6 @@ if(System.getenv('MODRINTH_TOKEN') != null) {
 		additionalFiles = [ jar, sourcesJar ]
 		gameVersions = [ "${minecraft_version}" ]
 		loaders = [ 'forge' ]
-		dependencies {
-
-		}
 	}
 }
 
