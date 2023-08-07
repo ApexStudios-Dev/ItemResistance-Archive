@@ -56,7 +56,12 @@ dependencies {
     })
 
     modImplementation "net.fabricmc:fabric-loader:${FABRIC_LOADER_VERSION}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${FABRIC_API_VERSION}+${MINECRAFT_VERSION}"
+
+    if(rootProject.hasProperty('FABRIC_API_MINECRAFT_VERSION')) {
+        modApi "net.fabricmc.fabric-api:fabric-api:${FABRIC_API_VERSION}+${FABRIC_API_MINECRAFT_VERSION}"
+    } else {
+        modApi "net.fabricmc.fabric-api:fabric-api:${FABRIC_API_VERSION}+${MINECRAFT_VERSION}"
+    }
 
     compileOnly project(path: ':common', configuration: 'namedElements')
 
