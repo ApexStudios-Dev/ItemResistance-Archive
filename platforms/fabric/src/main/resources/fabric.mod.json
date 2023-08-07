@@ -54,7 +54,11 @@
     ],
     "license": "${MOD_LICENSE}",
     "environment": "*",
-    "mixins": [],
+    "mixins": [
+        "itemresistance.mixins.json",
+        "itemresistance-common.mixins.json"
+    ],
+    "accessWidener": "itemresistance.accesswidener",
     "entrypoints": {
         "main": [
             "xyz.apex.minecraft.itemresistance.fabric.entrypoint.ItemResistanceModInitializer"
