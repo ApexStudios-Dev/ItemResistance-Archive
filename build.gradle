@@ -141,12 +141,24 @@ subprojects {
         repositories {
             if(providers.environmentVariable('MAVEN_PASSWORD').isPresent()) {
                 maven {
-                    name 'Covers1624-Maven'
-                    url 'https://nexus.covers1624.net/repository/apex-releases/'
+                    name 'Covers1624-Maven-Snapshots'
+                    url 'https://nexus.covers1624.net/repository/apex-snapshots/'
 
                     credentials {
                         username 'apex'
                         password providers.environmentVariable('MAVEN_PASSWORD').get()
+                    }
+                }
+
+                if(MOD_RELEASE_TYPE.equalsIgnoreCase('RELEASE')) {
+                    maven {
+                        name 'Covers1624-Maven'
+                        url 'https://nexus.covers1624.net/repository/apex-releases/'
+
+                        credentials {
+                            username 'apex'
+                            password providers.environmentVariable('MAVEN_PASSWORD').get()
+                        }
                     }
                 }
             }

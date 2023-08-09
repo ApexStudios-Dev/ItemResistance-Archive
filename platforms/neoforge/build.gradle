@@ -163,7 +163,7 @@ publishing {
 publishMods {
     file = remapJar.archiveFile
     changelog = rootProject.file('changelogs/changelog.md').exists() ? rootProject.file('changelogs/changelog.md').getText('UTF-8') : ''
-    type = me.modmuss50.mpp.ReleaseType.ALPHA
+    type = me.modmuss50.mpp.ReleaseType.of("${MOD_RELEASE_TYPE}")
     maxRetries = 5
     version = "${MOD_FULL_VERSION}"
     displayName = "[NeoForge] ${MOD_NAME} - ${MOD_FULL_VERSION}+${MINECRAFT_VERSION}"
