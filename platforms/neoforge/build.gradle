@@ -152,7 +152,13 @@ collectJars {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        release(MavenPublication) {
+            artifact jar
+            artifact sourcesJar
+            artifact tasks.jarJar
+        }
+
+        snapshot(MavenPublication) {
             artifact jar
             artifact sourcesJar
             artifact tasks.jarJar

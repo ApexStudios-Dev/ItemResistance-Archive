@@ -61,7 +61,14 @@ collectJars {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        release(MavenPublication) {
+            loom.disableDeprecatedPomGeneration(it)
+
+            artifact jar
+            artifact sourcesJar
+        }
+
+        snapshot(MavenPublication) {
             loom.disableDeprecatedPomGeneration(it)
 
             artifact jar
