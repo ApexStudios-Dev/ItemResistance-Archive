@@ -10,9 +10,11 @@ loom {
 }
 
 repositories {
-    exclusiveContent {
-        forRepository { maven { url 'https://repo.spongepowered.org/repository/maven-public' } }
-        filter { includeGroupByRegex 'org\\.spongepowered.*' }
+    maven {
+        url 'https://repo.spongepowered.org/repository/maven-public'
+        content {
+            includeGroupByRegex 'org\\.spongepowered.*'
+        }
     }
 }
 

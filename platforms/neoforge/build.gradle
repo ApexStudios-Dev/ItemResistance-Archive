@@ -1,6 +1,7 @@
 apply plugin: 'net.neoforged.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'me.modmuss50.mod-publish-plugin'
 
 jarJar.enable()
 
@@ -156,5 +157,29 @@ publishing {
             artifact sourcesJar
             artifact tasks.jarJar
         }
+    }
+}
+
+publishMods {
+    file = remapJar.archiveFile
+    changelog = rootProject.file('changelogs/changelog.md').exists() ? rootProject.file('changelogs/changelog.md').getText('UTF-8') : ''
+    type = me.modmuss50.mpp.ReleaseType.ALPHA
+    maxRetries = 5
+    version = "${MOD_FULL_VERSION}"
+    displayName = "[NeoForge] ${MOD_NAME} - ${MOD_FULL_VERSION}+${MINECRAFT_VERSION}"
+    modLoaders.add('neoforge')
+    additionalFiles.from(remapSourcesJar.archiveFile)
+    dryRun = !providers.environmentVariable('MODRINTH_TOKEN').isPresent() || !providers.environmentVariable('CURSEFORGE_TOKEN').isPresent()
+
+    curseforge {
+        projectId = "${MOD_CURSEFORGE_ID}"
+        accessToken = providers.environmentVariable('CURSEFORGE_TOKEN').getOrNull()
+        minecraftVersions.add("${MINECRAFT_VERSION}")
+    }
+
+    modrinth {
+        projectId = "${MOD_MODRINTH_ID}"
+        accessToken = providers.environmentVariable('MODRINTH_TOKEN').getOrNull()
+        minecraftVersions.add("${MINECRAFT_VERSION}")
     }
 }

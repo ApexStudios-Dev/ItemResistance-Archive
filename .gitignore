@@ -21,8 +21,9 @@ build
 # other
 run
 
-# Ignore generated data files
+# Ignore generated files
 **/generated/**
+/changelogs
 
 # Ignore compiled jars
 jars

@@ -1,28 +1,34 @@
 pluginManagement {
     repositories {
-        exclusiveContent {
-            forRepository { maven { url 'https://maven.neoforged.net' } }
-            filter { includeGroupByRegex 'net\\.neoforged.*' }
-            // TODO: Why is this still needed? we are running NeoForge not MinecraftForge
-            filter { includeGroupByRegex 'net\\.minecraftforge.*' }
+        maven {
+            url 'https://maven.neoforged.net'
+            content {
+                includeGroupByRegex 'net\\.neoforged.*'
+                // TODO: Why is this still needed? we are running NeoForge not MinecraftForge
+                includeGroupByRegex 'net\\.minecraftforge.*'
+            }
         }
 
-        exclusiveContent {
-            forRepository { maven { url 'https://maven.fabricmc.net' } }
-            filter {
+        maven {
+            url 'https://maven.fabricmc.net'
+            content {
                 includeGroup 'net.fabricmc'
                 includeGroup 'fabric-loom'
             }
         }
 
-        exclusiveContent {
-            forRepository { maven { url 'https://maven.parchmentmc.org' } }
-            filter { includeGroupByRegex 'org\\.parchmentmc.*' }
+        maven {
+            url 'https://maven.parchmentmc.org'
+            content {
+                includeGroupByRegex 'org\\.parchmentmc.*'
+            }
         }
 
-        exclusiveContent {
-            forRepository { maven { url 'https://repo.spongepowered.org/repository/maven-public' } }
-            filter { includeGroupByRegex 'org\\.spongepowered.*' }
+        maven {
+            url 'https://repo.spongepowered.org/repository/maven-public'
+            content {
+                includeGroupByRegex 'org\\.spongepowered.*'
+            }
         }
 
         gradlePluginPortal()
@@ -50,4 +56,4 @@ includePlatform 'common'
 // includePlatform 'neoforge'
 includePlatform 'fabric'
 
-rootProject.name = "${MOD_NAME}-${MINECRAFT_VERSION}"
+rootProject.name = "${MOD_NAME}"

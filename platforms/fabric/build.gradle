@@ -1,4 +1,5 @@
 apply plugin: 'fabric-loom'
+apply plugin: 'me.modmuss50.mod-publish-plugin'
 
 loom {
     if(getRootProject().file("${AW_FILE}").exists()) {
@@ -31,7 +32,7 @@ loom {
         }
 
         data {
-            client()
+            server()
             ideConfigGenerated true
             vmArg '-Dfabric-api.datagen'
             vmArg "-Dfabric-api.datagen.output-dir=${project(':common').file('src/generated/resources')}"
@@ -106,6 +107,38 @@ publishing {
 
             artifact remapJar
             artifact sourcesJar
+        }
+    }
+}
+
+publishMods {
+    file = remapJar.archiveFile
+    changelog = rootProject.file('changelogs/changelog.md').exists() ? rootProject.file('changelogs/changelog.md').getText('UTF-8') : ''
+    type = me.modmuss50.mpp.ReleaseType.ALPHA
+    maxRetries = 5
+    version = "${MOD_FULL_VERSION}"
+    displayName = "[Fabric] ${MOD_NAME} - ${MOD_FULL_VERSION}+${MINECRAFT_VERSION}"
+    modLoaders.add('fabric')
+    additionalFiles.from(remapSourcesJar.archiveFile)
+    dryRun = !providers.environmentVariable('MODRINTH_TOKEN').isPresent() || !providers.environmentVariable('CURSEFORGE_TOKEN').isPresent()
+
+    curseforge {
+        projectId = "${MOD_CURSEFORGE_ID}"
+        accessToken = providers.environmentVariable('CURSEFORGE_TOKEN').getOrNull()
+        minecraftVersions.add("${MINECRAFT_VERSION}")
+
+        requires {
+            slug = 'fabric-api'
+        }
+    }
+
+    modrinth {
+        projectId = "${MOD_MODRINTH_ID}"
+        accessToken = providers.environmentVariable('MODRINTH_TOKEN').getOrNull()
+        minecraftVersions.add("${MINECRAFT_VERSION}")
+
+        requires {
+            slug = 'fabric-api'
         }
     }
 }
