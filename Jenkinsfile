@@ -1,17 +1,5 @@
 #!/usr/bin/env groovy
 
-script {
-    properties ([
-            [
-                    $class: 'BuilderBlockerProperty',
-                    blockLevel: 'GLOBAL',
-                    blockingJobs: '.*ApexCore.*',
-                    scanQueueFor: 'ALL',
-                    useBuildBlocker: true
-            ]
-    ])
-}
-
 pipeline {
     agent any
     tools {
