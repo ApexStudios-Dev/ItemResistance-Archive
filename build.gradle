@@ -140,7 +140,7 @@ subprojects {
             snapshot(MavenPublication) {
                 groupId = "${project.group}"
                 artifactId = "${project.archivesBaseName}"
-                version = "${MOD_FULL_VERSION}-SNAPSHOT"
+                version = "${MOD_VERSION}-SNAPSHOT"
             }
         }
 
