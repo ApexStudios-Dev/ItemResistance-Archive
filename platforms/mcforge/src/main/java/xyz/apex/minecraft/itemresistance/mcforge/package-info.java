@@ -1,7 +1,7 @@
 @MethodsReturnNonnullByDefault
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
-package xyz.apex.minecraft.itemresistance.neoforge;
+package xyz.apex.minecraft.itemresistance.mcforge;
 
 import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;

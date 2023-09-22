@@ -1,10 +1,10 @@
-package xyz.apex.minecraft.itemresistance.neoforge;
+package xyz.apex.minecraft.itemresistance.mcforge;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.ExplosionEvent;
 import org.jetbrains.annotations.ApiStatus;
-import xyz.apex.minecraft.apexcore.neoforge.lib.EventBusHelper;
-import xyz.apex.minecraft.apexcore.neoforge.lib.EventBuses;
+import xyz.apex.minecraft.apexcore.mcforge.lib.EventBusHelper;
+import xyz.apex.minecraft.apexcore.mcforge.lib.EventBuses;
 import xyz.apex.minecraft.itemresistance.common.ItemResistance;
 
 @ApiStatus.Internal
