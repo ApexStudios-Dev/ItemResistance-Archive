@@ -1,0 +1,5 @@
+{
+  "gamerule.itemresistance:explosionsDisabled": "Вибухи вимкнено",
+  "gamerule.itemresistance:explosionsDisabled.description": "Контролює моживість випадіння блоків від вибухів.",
+  "pack.itemresistance.description": "ItemResistance"
+}
