@@ -1,7 +1,6 @@
 package xyz.apex.minecraft.itemresistance.fabric.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -11,9 +10,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import xyz.apex.minecraft.itemresistance.common.ItemResistance;
 
 import java.util.List;
+import java.util.Set;
 
 @Mixin(Explosion.class)
 public abstract class MixinExplosion
@@ -26,11 +27,12 @@ public abstract class MixinExplosion
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/phys/Vec3;<init>(DDD)V",
                     ordinal = 1
-            )
+            ),
+            locals = LocalCapture.CAPTURE_FAILHARD
     )
-    private void ItemResistance$explode(CallbackInfo ci, @Local LocalRef<List<Entity>> entities)
+    private void ItemResistance$explode(CallbackInfo ci, Set<BlockPos> set, int i, float q, int k, int l, int r, int s, int t, int u, List<Entity> entities)
     {
         var explosions = (Explosion) (Object) this;
-        ItemResistance.onExplosionDetonate(level, explosions, entities.get());
+        ItemResistance.onExplosionDetonate(level, explosions, entities);
     }
 }
